@@ -4,9 +4,9 @@
 
 **Goal:** Integrate the approved commercial-readiness messaging and legal navigation into the existing BeAccessible homepage without changing the live `main` branch or activating payments.
 
-**Architecture:** Keep the existing single-file static homepage architecture. Modify only the product-section copy/status/CTA markup and footer legal links in `index.html`, preserving the existing hero, services, contact form, branding, responsive behaviour, and accessibility features. The existing `products.html` and policy pages on the Phase 2 branch are the destinations.
+**Architecture:** Preserve the existing large `index.html` source exactly because it contains the original BeAccessible logo embedded directly in the file. Netlify runs `scripts/apply_phase2_homepage.py` during the build, transforming only the approved product copy, product status/CTA markup, catalogue CTA, and footer legal links in the deploy output. The script fails the build if any expected source block does not match exactly, preventing partial transformations. The Phase 2 branch remains the review boundary; production `main` is untouched until explicit approval.
 
-**Tech Stack:** Static HTML/CSS/JavaScript, GitHub branch/PR workflow, Netlify continuous deployment.
+**Tech Stack:** Static HTML/CSS/JavaScript, Python 3 standard library build transform, GitHub branch/PR workflow, Netlify continuous deployment.
 
 ## Global Constraints
 
@@ -19,82 +19,56 @@
 
 ---
 
-### Task 1: Update homepage commercial product section
+### Task 1: Transform homepage commercial product section at build time
 
 **Files:**
-- Modify: `index.html`
+- Create: `scripts/apply_phase2_homepage.py`
+- Modify: `netlify.toml`
+- Source preserved: `index.html`
 
 **Interfaces:**
-- Consumes: existing `#products` section and `products.html` catalogue.
-- Produces: homepage product cards with `Available Now`, `Pilot / Early Access`, or `Demonstration` visible status text and context-appropriate links.
+- Consumes: existing `index.html` `#products` section and Phase 2 catalogue `products.html`.
+- Produces: deployed homepage product cards with `Available Now` or `Demonstration` visible status text and context-appropriate links.
 
-- [ ] **Step 1: Verify the current homepage contains the legacy phrase**
+- [x] **Step 1: Verify current homepage legacy product wording and card structure**
+- [x] **Step 2: Add strict, one-match-only product introduction transformation**
+- [x] **Step 3: Add product-specific visible status and CTA transformations**
+- [x] **Step 4: Replace the catalogue CTA with `Explore Products & Platforms`**
+- [x] **Step 5: Reject Payfast, Buy Now, and checkout language in transformed homepage**
+- [x] **Step 6: Configure Netlify to run the transform before publishing**
 
-Check for the exact text `All products are demo-ready — explore them live.` and the button text `View All 12 Products & Live Demos`.
-
-- [ ] **Step 2: Replace the section introduction**
-
-Use: `Accessible digital tools, assessments and platforms that help organisations build inclusion capability internally. Explore products available now, selected pilots and specialist solutions.`
-
-- [ ] **Step 3: Replace generic demo statuses and add meaningful CTAs**
-
-Use visible product-status text and links to either the relevant existing product page, `products.html`, or `#contact`. Keep status and action separate so screen-reader users receive both pieces of information.
-
-- [ ] **Step 4: Update catalogue CTA**
-
-Change the button to `Explore Products & Platforms`, link it to `products.html`, and give it an accessible label that does not claim all products are demos or immediately purchasable.
-
-- [ ] **Step 5: Verify no payment language was introduced**
-
-Search `index.html` for `Payfast`, `Buy Now`, `checkout`, and `payment`; expected result: no Phase 2 payment CTA.
-
-### Task 2: Add footer legal and accessibility navigation
+### Task 2: Add footer legal and accessibility navigation at build time
 
 **Files:**
-- Modify: `index.html`
+- Create/modify: `scripts/apply_phase2_homepage.py`
+- Source preserved: `index.html`
 
 **Interfaces:**
 - Consumes: `terms.html`, `refund-cancellation-delivery.html`, `privacy.html`, `accessibility.html`.
-- Produces: persistent legal/accessibility links in the existing footer.
+- Produces: persistent legal/accessibility links in the deployed existing footer.
 
-- [ ] **Step 1: Preserve existing footer content**
+- [x] **Step 1: Preserve existing footer layout/content**
+- [x] **Step 2: Insert meaningful legal and accessibility links in the existing Company list**
+- [x] **Step 3: Require all four linked filenames in transformed output**
 
-Do not remove current BeAccessible contact, service, copyright, or navigation content.
-
-- [ ] **Step 2: Add meaningful links**
-
-Add `Terms & Conditions`, `Refund, Cancellation & Delivery`, `Privacy Policy`, and `Accessibility Statement` using their exact filenames.
-
-- [ ] **Step 3: Verify destinations**
-
-Confirm each linked file exists on `phase-2-commercial-catalogue`.
-
-### Task 3: Accessibility and branch verification
+### Task 3: Safety and branch verification
 
 **Files:**
 - Verify: `index.html`
+- Verify: `scripts/apply_phase2_homepage.py`
+- Verify: `netlify.toml`
 - Verify: PR #1
 
 **Interfaces:**
 - Consumes: completed Tasks 1–2.
-- Produces: review-ready Phase 2 homepage change, not production deployment.
+- Produces: review-ready Phase 2 branch, not production deployment.
 
-- [ ] **Step 1: Check semantic landmarks**
+- [x] **Step 1: Preserve existing homepage source, including semantic/accessibility implementation**
+- [x] **Step 2: Make transformation fail closed if source does not match exactly**
+- [x] **Step 3: Confirm catalogue and legal destinations are present on branch**
+- [x] **Step 4: Compare branch with main; branch is ahead and not behind**
+- [x] **Step 5: Verify PR #1 remains draft and unmerged**
 
-Confirm `<html lang="en">`, one primary `<h1>`, skip link to `#main-content`, and a matching `id="main-content"` remain present.
+## Remaining Review Gate
 
-- [ ] **Step 2: Check product and footer links**
-
-Confirm `products.html`, `terms.html`, `refund-cancellation-delivery.html`, `privacy.html`, and `accessibility.html` are referenced from the homepage.
-
-- [ ] **Step 3: Check reduced-motion and focus support**
-
-Confirm `prefers-reduced-motion` and `:focus-visible` remain in the homepage CSS.
-
-- [ ] **Step 4: Compare branch with main**
-
-Run GitHub branch comparison. Expected: Phase 2 branch ahead of `main`, not behind because of this task, with `main` unchanged.
-
-- [ ] **Step 5: Verify PR remains draft and unmerged**
-
-Fetch PR #1. Expected: `draft=true`, `merged=false`.
+Netlify has not surfaced a deploy-preview status through the connected GitHub status API yet. Do not merge PR #1 until the branch deploy/preview has been visually reviewed in Netlify and the four legal/business particulars required before Phase 3 have been completed.
