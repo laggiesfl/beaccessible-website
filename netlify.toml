@@ -1,5 +1,5 @@
 [build]
-  command = "python3 scripts/apply_phase2_build.py"
+  command = "python3 scripts/apply_phase2_homepage.py"
   publish = "."
 
 [[headers]]
