@@ -2,6 +2,9 @@ import { getProduct } from './lib/catalog.mjs';
 import { createPendingOrder as createStoredPendingOrder } from './lib/orders.mjs';
 import { generatePaymentSignature, parseFormBody, sandboxProcessUrl } from './lib/payfast.mjs';
 import { validateCheckoutInput } from './lib/validation.mjs';
+import { createFetchHandler } from './lib/netlify-adapter.mjs';
+
+export { createFetchHandler } from './lib/netlify-adapter.mjs';
 
 const POLICY_VERSION = '2026-08-13';
 
@@ -75,7 +78,16 @@ function parseInput(event) {
 }
 
 function sandboxConfig(env, event) {
-  const baseUrl = env.DEPLOY_PRIME_URL || env.URL || event.rawUrl;
+  let requestUrl;
+  try {
+    requestUrl = event.rawUrl ? new URL(event.rawUrl) : null;
+  } catch {
+    requestUrl = null;
+  }
+  const previewUrl = requestUrl?.protocol === 'https:' && requestUrl.hostname.endsWith('.netlify.app')
+    ? requestUrl.origin
+    : null;
+  const baseUrl = env.DEPLOY_PRIME_URL || previewUrl || env.URL;
   if (
     env.PAYFAST_MODE !== 'sandbox' ||
     !env.PAYFAST_SANDBOX_MERCHANT_ID ||
@@ -214,20 +226,5 @@ export function createStartPaymentHandler({
 }
 
 const handler = createStartPaymentHandler();
-
-export function createFetchHandler(legacyHandler) {
-  return async function fetchHandler(request) {
-    const result = await legacyHandler({
-      httpMethod: request.method,
-      rawUrl: request.url,
-      headers: Object.fromEntries(request.headers),
-      body: request.method === 'GET' || request.method === 'HEAD' ? '' : await request.text()
-    });
-    return new Response(result.body, {
-      status: result.statusCode,
-      headers: result.headers
-    });
-  };
-}
 
 export default createFetchHandler(handler);

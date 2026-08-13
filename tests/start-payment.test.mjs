@@ -112,6 +112,21 @@ test('manual Netlify preview derives its secure site address from the request UR
   assert.match(response.body, /name="notify_url" value="https:\/\/phase-3-payfast-gate--example\.netlify\.app\/\.netlify\/functions\/payfast-itn"/);
 });
 
+test('manual preview return URL does not fall back to the production site URL', async () => {
+  const { DEPLOY_PRIME_URL, ...previewEnv } = sandboxEnv;
+  const { handler } = createHarness({ ...previewEnv, URL: 'https://beaccessible.co.za' });
+  const response = await handler({
+    httpMethod: 'POST',
+    rawUrl: 'https://phase-3-payfast-gate--example.netlify.app/.netlify/functions/start-payment',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(validInput())
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.match(response.body, /name="return_url" value="https:\/\/phase-3-payfast-gate--example\.netlify\.app\/payment-return\.html/);
+  assert.doesNotMatch(response.body, /name="return_url" value="https:\/\/beaccessible\.co\.za/);
+});
+
 test('form input converts the checked policy field to a strict boolean', async () => {
   const { handler, created } = createHarness();
   const body = new URLSearchParams({

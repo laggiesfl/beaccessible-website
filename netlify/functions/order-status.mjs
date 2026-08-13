@@ -1,4 +1,5 @@
 import { getOrder as getStoredOrder } from './lib/orders.mjs';
+import { createFetchHandler } from './lib/netlify-adapter.mjs';
 
 const ORDER_REF_PATTERN = /^BA-\d{8}-[A-F0-9]{8}$/;
 
@@ -36,4 +37,6 @@ export function createOrderStatusHandler({ getOrder = getStoredOrder } = {}) {
   };
 }
 
-export const handler = createOrderStatusHandler();
+const handler = createOrderStatusHandler();
+
+export default createFetchHandler(handler);

@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
 import { lookup } from 'node:dns/promises';
 import { getOrder as getStoredOrder, markOrderPaid as markStoredOrderPaid } from './lib/orders.mjs';
+import { createFetchHandler } from './lib/netlify-adapter.mjs';
 import {
   amountMatches,
   generateItnSignature,
@@ -158,4 +159,6 @@ export function createPayfastItnHandler({
   };
 }
 
-export const handler = createPayfastItnHandler();
+const handler = createPayfastItnHandler();
+
+export default createFetchHandler(handler);
