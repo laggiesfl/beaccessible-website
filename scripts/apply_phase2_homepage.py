@@ -26,7 +26,7 @@ product_updates = [
     ),
     (
         '<h3 id="product-2-heading">GrantFlow AI™</h3>\n              <p>End-to-end automated grant management with AI scoring, adjudication, and M&amp;E dashboards for CSI divisions.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
-        '<h3 id="product-2-heading">GrantFlow AI™</h3>\n              <p>End-to-end automated grant management with AI scoring, adjudication, and M&amp;E dashboards for CSI divisions.</p>\n              <span class="product-badge badge-coming">Demonstration</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="grantflow.html" aria-label="Explore the GrantFlow AI demonstration">Explore Demonstration <span aria-hidden="true">→</span></a></div>',
+        '<h3 id="product-2-heading">GrantFlow AI™</h3>\n              <p>Demonstration of an end-to-end grant-management workflow with AI-supported scoring, adjudication and M&amp;E dashboards.</p>\n              <span class="product-badge badge-coming">Demonstration</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="grantflow.html" aria-label="Explore the GrantFlow AI demonstration">Explore Demonstration <span aria-hidden="true">→</span></a></div>',
         "GrantFlow card",
     ),
     (
@@ -36,13 +36,13 @@ product_updates = [
     ),
     (
         '<h3 id="product-4-heading">TrustOps</h3>\n              <p>ERP system for development trusts — Finance, Projects, and M&amp;E. Lite and Enterprise tiers available.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
-        '<h3 id="product-4-heading">TrustOps</h3>\n              <p>ERP system for development trusts — Finance, Projects, and M&amp;E. Lite and Enterprise tiers available.</p>\n              <span class="product-badge badge-coming">Demonstration</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="products.html" aria-label="View TrustOps and other BeAccessible product options">View Product Catalogue <span aria-hidden="true">→</span></a></div>',
+        '<h3 id="product-4-heading">TrustOps</h3>\n              <p>Demonstration of an ERP operating model for development trusts covering Finance, Projects and M&amp;E.</p>\n              <span class="product-badge badge-coming">Demonstration</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="products.html" aria-label="View TrustOps and other BeAccessible product options">View Product Catalogue <span aria-hidden="true">→</span></a></div>',
         "TrustOps card",
     ),
     (
         '<h3 id="product-5-heading">InclusiveLearn™ UDL Platform</h3>\n              <p>Universal Design for Learning platform — review, redesign, and report on inclusive learning experiences.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
-        '<h3 id="product-5-heading">InclusiveLearn™ UDL Platform</h3>\n              <p>Universal Design for Learning platform — review, redesign, and report on inclusive learning experiences.</p>\n              <span class="product-badge badge-coming">Demonstration</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="inclusivelearn-udl.html" aria-label="Explore the InclusiveLearn UDL demonstration">Explore Demonstration <span aria-hidden="true">→</span></a></div>',
-        "InclusiveLearn card",
+        '<h3 id="product-5-heading">UDL Educator Hub</h3>\n              <p>Practical Universal Design for Learning tools for educators, trainers and learning teams, with free core resources and licensed Pro and organisation options.</p>\n              <span class="product-badge badge-live">Available Now</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="https://udl-educator-hub.netlify.app/" aria-label="Open the live UDL Educator Hub">Open UDL Educator Hub <span aria-hidden="true">→</span></a></div>',
+        "UDL Educator Hub card",
     ),
     (
         '<h3 id="product-6-heading">CyberResilience OS™</h3>\n              <p>Cyber resilience operating model with disability-inclusive incident response aligned to UNCRPD Article 11.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
@@ -71,6 +71,12 @@ replace_once(
 )
 
 replace_once(
+    '<div class="hero-stat-number">AAA</div>\n              <div class="hero-stat-label">WCAG 2.2 compliance across all deliverables</div>',
+    '<div class="hero-stat-number">WCAG 2.2</div>\n              <div class="hero-stat-label">AA baseline, with AAA criteria applied wherever reasonably achievable</div>',
+    "homepage WCAG standard claim",
+)
+
+replace_once(
     '<li><a href="#contact">Contact</a></li>\n            <li><a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a></li>',
     '<li><a href="#contact">Contact</a></li>\n            <li><a href="terms.html">Terms &amp; Conditions</a></li>\n            <li><a href="refund-cancellation-delivery.html">Refund, Cancellation &amp; Delivery</a></li>\n            <li><a href="privacy.html">Privacy Policy</a></li>\n            <li><a href="accessibility.html">Accessibility Statement</a></li>\n            <li><a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a></li>',
     "footer legal links",
@@ -86,8 +92,10 @@ required = (
     'href="refund-cancellation-delivery.html"',
     'href="privacy.html"',
     'href="accessibility.html"',
+    'href="https://udl-educator-hub.netlify.app/"',
     '>Available Now<',
     '>Demonstration<',
+    'AA baseline, with AAA criteria applied wherever reasonably achievable',
 )
 for item in required:
     if item not in html:
