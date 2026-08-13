@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GlowGo Pro v2 Demo</title>
+<style>
+:root{
+--primary:#1F3F6B;
+--mid:#2F5C9A;
+--accent:#4A78B5;
+--bg:#FFFFFF;
+--bg-soft:#F5F7FA;
+--text:#1A1A1A;
+--muted:#666;
+--border:#D9E1EA;
+--success:#2E7D4A;
+--warning:#B8860B;
+--promo:#E91E63;
+--voucher:#7C4DFF;
+--focus:#2563A8;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#111;color:var(--text);display:flex}
+button,input,select,textarea{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* RIGHT SIDEBAR */
+.sidebar{
+width:260px;
+background:#0f1f33;
+padding:20px;
+color:white;
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+overflow-y:auto;
+border-right:1px solid rgba(255,255,255,0.08);
+}
+.sidebar h3{margin-top:0;font-size:14px;opacity:.85;letter-spacing:.02em}
+.sidebar button{
+display:block;
+width:100%;
+margin-bottom:10px;
+padding:14px 12px;
+border:none;
+border-radius:14px;
+background:#24476f;
+color:white;
+cursor:pointer;
+font-weight:700;
+text-align:left;
+transition:transform .15s ease, background .15s ease;
+min-height:48px;
+}
+.sidebar button:hover{transform:translateY(-1px);background:#2b5483}
+.sidebar button.active{box-shadow:0 0 0 2px rgba(255,255,255,.22) inset;background:#305b8f}
+.sidebar button.highlight{background:var(--voucher)}
+.sidebar button.highlight:hover{background:#6B3FE6}
+.sidebar button.promo{background:var(--promo)}
+.sidebar button.promo:hover{background:#cf1560}
+.sidebar-note{font-size:12px;opacity:.75;margin-top:8px;line-height:1.45}
+
+/* MAIN */
+.main{margin-left:260px;width:calc(100% - 260px);min-height:100vh;background:var(--bg);display:flex;flex-direction:column;align-items:center}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:5}
+.brand{font-weight:700;color:var(--primary);letter-spacing:.02em}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap}
+.top-actions button{border:none;border-radius:999px;padding:10px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;min-height:44px}
+.top-actions button.secondary{background:#EAF1F8;color:var(--primary)}
+
+.hero{
+text-align:center;
+padding:72px 20px 40px;
+background:#f5f5f5;
+max-width:900px;
+margin:0 auto;
+width:100%
+
+}
+.hero h1{font-size:60px;line-height:1.05;margin:0;color:var(--primary);font-family:Georgia,serif;font-weight:500}
+.hero .eyebrow{font-size:18px;letter-spacing:.18em;color:#b68b59;margin:18px 0 56px}
+.hero .hero-copy{font-family:Georgia,serif;font-size:38px;line-height:1.45;color:#111;max-width:760px;margin:0 auto 26px}
+.hero p{max-width:680px;margin:20px auto;color:#444;font-size:17px;line-height:1.8}
+.feature-list{max-width:780px;margin:42px auto 0;display:grid;gap:22px;text-align:left}
+.feature-card{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px 20px}
+.card-icon{width:58px;height:58px;background:#eee;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+.feature-card h3{margin:0 0 6px;font-size:18px}
+.feature-card p{margin:0;color:#444;max-width:none;font-size:15px;line-height:1.6}
+
+.section{max-width:900px;margin:0 auto;padding:32px 28px 44px;width:100%}
+.section-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.section h2{margin:0;color:var(--primary);font-size:36px;line-height:1.15}
+.section .subtext{margin:6px 0 0;color:var(--muted);font-size:16px;line-height:1.6;max-width:760px}
+.screen-actions{display:flex;gap:10px;flex-wrap:wrap}
+.screen-actions button{border:none;border-radius:12px;padding:12px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;min-height:44px}
+.screen-actions button.secondary{background:#EAF1F8;color:var(--primary)}
+.grid{display:grid;gap:18px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}
+.metric{font-size:34px;font-weight:800;color:var(--primary);margin-bottom:6px}
+.label{font-size:14px;color:var(--muted)}
+.row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.list{display:grid;gap:12px}
+.list-item{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px}
+.list-item h4{margin:0 0 6px;font-size:17px}
+.list-item p{margin:0;color:#555;line-height:1.55}
+.kicker{display:inline-block;padding:6px 10px;border-radius:999px;background:#EEF4FB;color:var(--primary);font-size:12px;font-weight:700;letter-spacing:.02em;margin-bottom:10px}
+.badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.success{background:rgba(46,125,74,.12);color:var(--success)}
+.badge.warning{background:rgba(184,134,11,.12);color:var(--warning)}
+.badge.promo{background:rgba(233,30,99,.12);color:var(--promo)}
+.badge.voucher{background:rgba(124,77,255,.12);color:var(--voucher)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid var(--border);vertical-align:top}
+.table th{font-size:13px;color:var(--muted);font-weight:700}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.day-head,.day{border-radius:12px;text-align:center;padding:12px 8px}
+.day-head{font-size:12px;color:var(--muted);font-weight:700;background:#F6F8FB;border:1px solid var(--border)}
+.day{border:1px solid var(--border);background:#fff;min-height:56px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.day.available{background:rgba(46,125,74,.08);color:var(--success)}
+.day.partial{background:rgba(184,134,11,.10);color:var(--warning)}
+.day.unavailable{background:#F3F4F7;color:#8A8A8A}
+.note{background:#F8FAFD;border:1px solid var(--border);border-radius:16px;padding:16px;color:#444;line-height:1.6}
+.form-grid{display:grid;gap:16px}
+.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.form-field{display:grid;gap:8px}
+.form-field label{font-weight:700;color:var(--primary)}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:14px 14px;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text);min-height:48px}
+.form-field textarea{min-height:120px;resize:vertical}
+.form-help{font-size:13px;color:var(--muted);line-height:1.5}
+.success-panel{background:rgba(46,125,74,.08);border:1px solid rgba(46,125,74,.24);border-radius:16px;padding:16px;color:var(--success);line-height:1.6}
+.cta-banner{margin-top:24px;background:linear-gradient(135deg,var(--primary),var(--mid));color:#fff;border-radius:22px;padding:24px}
+.cta-banner h3{margin:0 0 10px;font-size:24px}
+.cta-banner p{margin:0 0 14px;line-height:1.6;max-width:760px}
+.cta-banner .actions{display:flex;gap:10px;flex-wrap:wrap}
+.cta-banner .actions button{border:none;border-radius:12px;padding:12px 14px;cursor:pointer;font-weight:700;min-height:44px}
+.cta-banner .actions .primary{background:#fff;color:var(--primary)}
+.cta-banner .actions .secondary{background:rgba(255,255,255,.14);color:#fff}
+
+.screen{display:none}
+.screen.active{display:block}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media (max-width: 1100px){
+  .grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 900px){
+  body{display:block}
+  .sidebar{position:static;width:100%;border-right:none;border-top:1px solid rgba(255,255,255,.08)}
+  .main{margin-left:0;width:100%}
+  .hero h1{font-size:48px}
+  .hero .hero-copy{font-size:30px}
+}
+@media (max-width: 700px){
+  .grid.two,.grid.three,.form-row{grid-template-columns:1fr}
+  .section{padding:24px 16px 36px}
+  .topbar{padding:14px 16px}
+  .hero{padding:54px 16px 28px}
+  .hero h1{font-size:40px}
+  .hero .eyebrow{margin-bottom:34px;font-size:16px}
+  .hero .hero-copy{font-size:25px}
+  .sidebar{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="topbar">
+    <div class="brand">GlowGo Pro • Professional Dashboard v2</div>
+    <div class="top-actions">
+      <button type="button" onclick="show('register')">Register</button>
+      <button type="button" class="secondary" onclick="show('welcome')">Back to Welcome</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="welcome" class="screen active hero" aria-label="Welcome screen">
+    <h1>GlowGo</h1>
+    <div class="eyebrow">FOR PROFESSIONALS</div>
+    <div class="hero-copy">Earn on your terms.<br/>Beauty that comes to you.</div>
+    <p>Join thousands of beauty professionals growing their mobile business with GlowGo. Manage bookings, services, promotions, vouchers, client records, and your team from one professional dashboard.</p>
+
+    <div class="feature-list">
+      <div class="feature-card">
+        <div class="card-icon" aria-hidden="true">📅</div>
+        <div>
+          <h3>Flexible schedule</h3>
+          <p>Work when you want, where you want. Set your availability, manage appointments, and stay in control of your calendar.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon" aria-hidden="true">💷</div>
+        <div>
+          <h3>Keep more of what you earn</h3>
+          <p>Track earnings, see commission performance, and use promotions or vouchers to grow repeat business without losing visibility.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon" aria-hidden="true">✨</div>
+        <div>
+          <h3>Built for mobile beauty businesses</h3>
+          <p>From solo practitioners to small teams, GlowGo helps you run a polished, client-ready service operation from one place.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register" class="screen section" aria-label="Register screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Onboarding</div>
+        <h2>Register</h2>
+        <p class="subtext">A simple sign-up flow for new beauty professionals joining the platform.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Create account</button>
+        <button type="button" class="secondary">Save for later</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Business details</h3>
+        <div class="list">
+          <div class="list-item"><h4>Full name</h4><p>Professionally presented registration field for account setup.</p></div>
+          <div class="list-item"><h4>Business name</h4><p>Used on your profile, public listing, and client booking view.</p></div>
+          <div class="list-item"><h4>Primary service category</h4><p>Hair, braids, nails, makeup, skincare, barbering, or mobile wellness.</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Account setup</h3>
+        <div class="list">
+          <div class="list-item"><h4>Email and password</h4><p>Secure login with password reset support.</p></div>
+          <div class="list-item"><h4>Service area</h4><p>Set the locations where you are willing to travel or accept appointments.</p></div>
+          <div class="list-item"><h4>Availability starter</h4><p>Choose working days and preferred hours during onboarding.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="screen section" aria-label="Dashboard screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Operations snapshot</div>
+        <h2>Dashboard</h2>
+        <p class="subtext">A quick summary of earnings, bookings, ratings, and business momentum for the current month.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Export summary</button>
+        <button type="button" class="secondary" onclick="show('bookings')">View bookings</button>
+      </div>
+    </div>
+    <div class="grid three">
+      <div class="card"><div class="metric">£2,847</div><div class="label">This month</div></div>
+      <div class="card"><div class="metric">23</div><div class="label">Confirmed bookings</div></div>
+      <div class="card"><div class="metric">4.9</div><div class="label">Average rating</div></div>
+      <div class="card"><div class="metric">15%</div><div class="label">Commission tier</div></div>
+      <div class="card"><div class="metric">18</div><div class="label">Repeat clients</div></div>
+      <div class="card"><div class="metric">£153</div><div class="label">To next tier</div></div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Revenue overview</h3>
+        <table class="table" aria-label="Revenue overview">
+          <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>Gross bookings</td><td>£3,350.00</td></tr>
+            <tr><td>Voucher redemptions</td><td>£150.00</td></tr>
+            <tr><td>Platform commission</td><td>−£525.00</td></tr>
+            <tr><td><strong>Net earnings</strong></td><td><strong>£2,975.00</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Today at a glance</h3>
+        <div class="list">
+          <div class="list-item"><h4>10:00 — Ayanda M.</h4><p>Wash, retwist and style • £120 • Confirmed</p></div>
+          <div class="list-item"><h4>13:30 — Nomsa K.</h4><p>Braids and treatment • £95 • Pending confirmation</p></div>
+          <div class="list-item"><h4>17:00 — Admin block</h4><p>Reserved time for stock, follow-ups, and schedule planning.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKINGS -->
+  <section id="bookings" class="screen section" aria-label="Bookings screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Appointments</div>
+        <h2>Bookings</h2>
+        <p class="subtext">Track new, confirmed, pending, and completed appointments in one place.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Add booking</button>
+        <button type="button" class="secondary">Filter calendar</button>
+      </div>
+    </div>
+    <div class="list">
+      <div class="list-item">
+        <div class="row">
+          <div>
+            <h4>Ayanda M.</h4>
+            <p>Today • 10:00 • Wash, retwist and style • 2h 30m</p>
+          </div>
+          <span class="badge success">Confirmed</span>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="row">
+          <div>
+            <h4>Nomsa K.</h4>
+            <p>Tomorrow • 13:30 • Braids and treatment • 2h</p>
+          </div>
+          <span class="badge warning">Pending</span>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="row">
+          <div>
+            <h4>Lerato P.</h4>
+            <p>Friday • 09:00 • Bridal makeup trial • 1h 30m</p>
+          </div>
+          <span class="badge success">Confirmed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOUCHERS -->
+  <section id="vouchers" class="screen section" aria-label="Vouchers screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Revenue growth</div>
+        <h2>Vouchers</h2>
+        <p class="subtext">Sell gift vouchers, track redemptions, and create seasonal campaigns that drive new client bookings.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Create voucher</button>
+        <button type="button" class="secondary">View redemption history</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Active voucher campaigns</h3>
+        <div class="list">
+          <div class="list-item"><div class="row"><div><h4>Mother’s Day Gift Card</h4><p>£50 fixed-value voucher for mobile pamper appointments.</p></div><span class="badge voucher">Active</span></div></div>
+          <div class="list-item"><div class="row"><div><h4>GlowGo Welcome Credit</h4><p>£20 incentive for new bookings referred by existing clients.</p></div><span class="badge voucher">Scheduled</span></div></div>
+          <div class="list-item"><div class="row"><div><h4>Holiday Beauty Bundle</h4><p>Premium voucher bundle for festive season appointments.</p></div><span class="badge voucher">Draft</span></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Voucher performance</h3>
+        <table class="table" aria-label="Voucher performance">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Sold this month</td><td>14</td></tr>
+            <tr><td>Redeemed this month</td><td>6</td></tr>
+            <tr><td>Outstanding voucher value</td><td>£420</td></tr>
+            <tr><td>Voucher-driven new clients</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMOS -->
+  <section id="promotions" class="screen section" aria-label="Promotions screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Marketing</div>
+        <h2>Promotions</h2>
+        <p class="subtext">Create offers, boost slower timeslots, and increase repeat bookings through clear promotional campaigns.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Create promotion</button>
+        <button type="button" class="secondary">Duplicate previous offer</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Live offers</h3>
+        <div class="list">
+          <div class="list-item"><div class="row"><div><h4>First-Time Client Offer</h4><p>20% off first booking for new mobile beauty clients.</p></div><span class="badge promo">Live</span></div></div>
+          <div class="list-item"><div class="row"><div><h4>Loc Retwist Bundle</h4><p>Book 3 loc retwists, get the 4th at a reduced rate.</p></div><span class="badge promo">Live</span></div></div>
+          <div class="list-item"><div class="row"><div><h4>Midweek Fill-Up</h4><p>Discount for Tuesday and Wednesday slots to reduce downtime.</p></div><span class="badge promo">Scheduled</span></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Promotion results</h3>
+        <table class="table" aria-label="Promotion results">
+          <thead><tr><th>Promotion</th><th>Revenue</th><th>Uses</th></tr></thead>
+          <tbody>
+            <tr><td>First-Time Client Offer</td><td>£980</td><td>10</td></tr>
+            <tr><td>Loc Retwist Bundle</td><td>£1,560</td><td>8</td></tr>
+            <tr><td>Midweek Fill-Up</td><td>£420</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="screen section" aria-label="Services screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Catalogue</div>
+        <h2>Services</h2>
+        <p class="subtext">Present your services clearly, keep pricing up to date, and control appointment duration expectations.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Add service</button>
+        <button type="button" class="secondary">Reorder services</button>
+      </div>
+    </div>
+    <div class="grid three">
+      <div class="card"><h3>Loc Retwist</h3><p>90 minutes • £65</p></div>
+      <div class="card"><h3>Wash &amp; Treatment</h3><p>45 minutes • £35</p></div>
+      <div class="card"><h3>Braids Install</h3><p>180 minutes • £110</p></div>
+      <div class="card"><h3>Bridal Makeup Trial</h3><p>90 minutes • £85</p></div>
+      <div class="card"><h3>Call-out Pamper Session</h3><p>120 minutes • £140</p></div>
+      <div class="card"><h3>Express Glam</h3><p>60 minutes • £55</p></div>
+    </div>
+  </section>
+
+  <!-- MORE -->
+  <section id="more" class="screen section" aria-label="More screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Business tools</div>
+        <h2>More</h2>
+        <p class="subtext">Additional professional features that help you manage your day-to-day operation with less friction.</p>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card"><h3>Payout summaries</h3><p>Track expected payouts, pending settlements, and completed transfers.</p></div>
+      <div class="card"><h3>Notifications</h3><p>Booking confirmations, reminder flows, voucher alerts, and promotion performance updates.</p></div>
+      <div class="card"><h3>Business settings</h3><p>Travel radius, cancellation policy, profile visibility, and branded client communications.</p></div>
+      <div class="card"><h3>Reports</h3><p>Monthly summaries, booking trends, popular services, and repeat client activity.</p></div>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section id="clients" class="screen section" aria-label="Clients screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Relationship management</div>
+        <h2>Clients</h2>
+        <p class="subtext">Keep a clear view of client history, preferences, repeat activity, and communication notes.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Add client</button>
+        <button type="button" class="secondary">Export client list</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Client profiles</h3>
+        <div class="list">
+          <div class="list-item"><h4>Ayanda M.</h4><p>Repeat client • Prefers morning slots • Loc care and styling</p></div>
+          <div class="list-item"><h4>Nomsa K.</h4><p>New client • Interested in braids and treatment bundles</p></div>
+          <div class="list-item"><h4>Lerato P.</h4><p>Bridal client • Trial completed • Wedding booking pending</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Client insights</h3>
+        <table class="table" aria-label="Client insights">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Total active clients</td><td>46</td></tr>
+            <tr><td>Repeat rate</td><td>61%</td></tr>
+            <tr><td>Top returning service</td><td>Loc Retwist</td></tr>
+            <tr><td>Referral conversions</td><td>9 this month</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section id="integrations" class="screen section" aria-label="Integrations screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Connected tools</div>
+        <h2>Integrations</h2>
+        <p class="subtext">Show how GlowGo can connect to payments, calendars, reminders, CRM workflows, and reporting tools.</p>
+      </div>
+    </div>
+    <div class="grid three">
+      <div class="card"><h3>Payments</h3><p>Stripe, Yoco, Paystack, and voucher redemption flows for secure checkout.</p></div>
+      <div class="card"><h3>Calendar sync</h3><p>Google Calendar or Outlook sync to reduce scheduling conflicts.</p></div>
+      <div class="card"><h3>Messaging</h3><p>Email and SMS reminders for bookings, vouchers, and promotions.</p></div>
+      <div class="card"><h3>CRM</h3><p>Client notes, follow-ups, and retention workflows linked to booking activity.</p></div>
+      <div class="card"><h3>Analytics</h3><p>Business intelligence dashboards for revenue, booking trends, and conversion tracking.</p></div>
+      <div class="card"><h3>Forms</h3><p>Intake forms, consent capture, and service-specific pre-appointment questions.</p></div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" class="screen section" aria-label="Team screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Multi-staff management</div>
+        <h2>Team</h2>
+        <p class="subtext">Support small salon teams or mobile collectives with role-based access and staff scheduling visibility.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button">Invite team member</button>
+        <button type="button" class="secondary">Manage roles</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Team members</h3>
+        <div class="list">
+          <div class="list-item"><h4>Zinhle R.</h4><p>Senior stylist • Tuesday to Saturday • Client retention lead</p></div>
+          <div class="list-item"><h4>Neo T.</h4><p>Makeup artist • Weekend availability • Bridal bookings</p></div>
+          <div class="list-item"><h4>Tumi S.</h4><p>Assistant • Inventory and travel coordination</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Team controls</h3>
+        <div class="list">
+          <div class="list-item"><h4>Role permissions</h4><p>Owner, manager, service professional, or support staff access.</p></div>
+          <div class="list-item"><h4>Shared schedule</h4><p>See capacity by person, avoid overlaps, and allocate specialist bookings.</p></div>
+          <div class="list-item"><h4>Performance view</h4><p>Track bookings, revenue, and client satisfaction by staff member.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK A DEMO -->
+  <section id="book-demo" class="section" aria-label="Book a demo form">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Lead capture</div>
+        <h2>Book a Demo</h2>
+        <p class="subtext">Collect interest from prospective clients directly from your demo site. This form is structured so it can work as a Netlify form when deployed.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button" onclick="show('welcome')">Return to Welcome</button>
+        <button type="button" class="secondary" onclick="show('dashboard')">View product again</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Request a guided walkthrough</h3>
+        <form name="book-demo" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form-grid" onsubmit="handleDemoSubmit(event)">
+          <input type="hidden" name="form-name" value="book-demo" />
+          <p class="visually-hidden">
+            <label>Do not fill this out if you are human: <input name="bot-field" /></label>
+          </p>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="demo-name">Full name</label>
+              <input id="demo-name" name="full_name" type="text" autocomplete="name" required />
+            </div>
+            <div class="form-field">
+              <label for="demo-email">Work email</label>
+              <input id="demo-email" name="email" type="email" autocomplete="email" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="demo-business">Business name</label>
+              <input id="demo-business" name="business_name" type="text" autocomplete="organization" required />
+            </div>
+            <div class="form-field">
+              <label for="demo-phone">Phone or WhatsApp</label>
+              <input id="demo-phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="demo-type">Business type</label>
+              <select id="demo-type" name="business_type" required>
+                <option value="">Select one</option>
+                <option>Solo beauty professional</option>
+                <option>Mobile team</option>
+                <option>Salon or studio</option>
+                <option>Makeup or bridal business</option>
+                <option>Other service business</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="demo-size">Team size</label>
+              <select id="demo-size" name="team_size" required>
+                <option value="">Select one</option>
+                <option>Just me</option>
+                <option>2–5 people</option>
+                <option>6–10 people</option>
+                <option>11+ people</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="demo-needs">What do you want help with?</label>
+            <textarea id="demo-needs" name="goals" placeholder="Example: bookings, vouchers, team scheduling, promotions, client management" required></textarea>
+          </div>
+          <div class="form-field">
+            <label for="demo-time">Preferred demo timing</label>
+            <select id="demo-time" name="preferred_timing">
+              <option value="">Select one</option>
+              <option>This week</option>
+              <option>Next week</option>
+              <option>This month</option>
+              <option>Just send information first</option>
+            </select>
+          </div>
+          <div class="form-help">By submitting this form, the lead can request a follow-up demo call or product walkthrough. When hosted on Netlify, form submissions can be captured in the site dashboard.</div>
+          <div class="screen-actions">
+            <button type="submit">Submit demo request</button>
+            <button type="reset" class="secondary">Clear form</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>What happens next</h3>
+        <div class="list">
+          <div class="list-item"><h4>1. Lead captured</h4><p>The prospect’s details are recorded from the form submission for follow-up.</p></div>
+          <div class="list-item"><h4>2. Qualification</h4><p>You review business type, team size, and needs before the demo call.</p></div>
+          <div class="list-item"><h4>3. Guided demonstration</h4><p>You tailor the walkthrough around bookings, vouchers, promotions, or team workflows.</p></div>
+        </div>
+        <div class="success-panel" style="margin-top:16px;">
+          Recommended next step after deployment: connect form notifications so every new lead is emailed to you immediately at hello@beaccessible.co.za.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="thank-you" class="screen section" aria-label="Thank you screen">
+    <div class="section-header">
+      <div>
+        <div class="kicker">Thank you</div>
+        <h2>Your demo request has been received</h2>
+        <p class="subtext">Thank you for your interest in GlowGo. Your request has been submitted successfully and the details are ready for follow-up.</p>
+      </div>
+      <div class="screen-actions">
+        <button type="button" onclick="show('dashboard')">View Dashboard</button>
+        <button type="button" class="secondary" onclick="show('welcome')">Back to Welcome</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>What happens next</h3>
+        <div class="list">
+          <div class="list-item"><h4>1. Lead reviewed</h4><p>Your submitted business details are reviewed so the walkthrough can be tailored to your needs.</p></div>
+          <div class="list-item"><h4>2. Contact follow-up</h4><p>You receive a response with next steps, scheduling options, or further information.</p></div>
+          <div class="list-item"><h4>3. Guided product demo</h4><p>The demo is focused on bookings, vouchers, promotions, team workflows, and client management.</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Recommended while you wait</h3>
+        <div class="list">
+          <div class="list-item"><h4>Review the Dashboard</h4><p>See how GlowGo presents business performance in a clear and professional format.</p></div>
+          <div class="list-item"><h4>Explore Promotions and Vouchers</h4><p>These screens show how revenue growth and client acquisition can be positioned during the demo.</p></div>
+          <div class="list-item"><h4>Return to the welcome screen</h4><p>Use the navigation controls if you want to restart the walkthrough from the beginning.</p></div>
+        </div>
+        <div class="success-panel" style="margin-top:16px;">Success: this custom thank-you screen replaces a generic submission experience and gives the demo a more polished sales flow.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Call to action banner">
+    <div class="cta-banner">
+      <p><strong>Enquiries:</strong> <a href="mailto:hello@beaccessible.co.za" style="color:#fff;text-decoration:underline;">hello@beaccessible.co.za</a></p>
+      <h3>Ready to demonstrate GlowGo to clients</h3>
+      <p>This version is designed as a polished clickable prototype for sales conversations, discovery calls, and early-stage market validation.</p>
+      <div class="actions">
+        <button type="button" class="primary" onclick="document.getElementById('book-demo').scrollIntoView({behavior:'smooth',block:'start'})">Book a demo</button>
+        <button type="button" class="secondary" onclick="show('register')">Start onboarding</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" aria-label="Jump to screen navigation">
+  <h3>Jump to screen:</h3>
+  <button onclick="show('welcome')" data-screen="welcome" class="active">Welcome</button>
+  <button onclick="show('register')" data-screen="register">Register</button>
+  <button onclick="show('dashboard')" data-screen="dashboard">Dashboard</button>
+  <button onclick="show('bookings')" data-screen="bookings">Bookings</button>
+  <button class="highlight" onclick="show('vouchers')" data-screen="vouchers">Vouchers</button>
+  <button class="promo" onclick="show('promotions')" data-screen="promotions">Promotions</button>
+  <button onclick="show('services')" data-screen="services">Services</button>
+  <button onclick="show('more')" data-screen="more">More</button>
+  <button onclick="show('clients')" data-screen="clients">Clients</button>
+  <button onclick="show('integrations')" data-screen="integrations">Integrations</button>
+  <button onclick="show('team')" data-screen="team">Team</button>
+  <p class="sidebar-note">All visible buttons now route to real sections so the prototype is consistent for client demonstrations.</p>
+</div>
+
+<div id="live-region" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+const screens = ['welcome','register','dashboard','bookings','vouchers','promotions','services','more','clients','integrations','team','thank-you'];
+function show(id){
+  if(!screens.includes(id)) return;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){
+    el.classList.add('active');
+    document.querySelectorAll('.sidebar button').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.screen===id);
+      if(btn.dataset.screen===id){btn.setAttribute('aria-current','page')} else {btn.removeAttribute('aria-current')}
+    });
+    const liveRegion=document.getElementById('live-region');
+    if(liveRegion){liveRegion.textContent=id.charAt(0).toUpperCase()+id.slice(1)+' screen loaded';}
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+async function handleDemoSubmit(event){
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+  try{
+    const response = await fetch('/', {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams(formData).toString()
+    });
+    if(!response.ok) throw new Error('Form submission failed');
+    form.reset();
+    show('thank-you');
+  } catch(error){
+    const liveRegion=document.getElementById('live-region');
+    if(liveRegion){liveRegion.textContent='There was a problem submitting the demo request. Please try again.';}
+    alert('There was a problem submitting the demo request. Please try again.');
+  }
+}
+</script>
+<!-- Chatbot temporarily disabled -- re-add <script src="chatbot.js"></script> here to re-enable -->
+</body>
+</html>
