@@ -21,8 +21,8 @@ replace_once(
 product_updates = [
     (
         '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Algorithmic bias testing and accountability platform. SA AI Policy, EU AI Act, and IBM bias taxonomy aligned.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
-        '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Algorithmic bias testing and accountability platform. SA AI Policy, EU AI Act, and IBM bias taxonomy aligned.</p>\n              <span class="product-badge badge-live">Available Now</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="products.html" aria-label="Explore BiasLens assessment and licensing options">Explore BiasLens <span aria-hidden="true">→</span></a></div>',
-        "BiasLens card",
+        '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Production-ready algorithmic bias assessment and accountability platform for organisations using AI-supported decision systems.</p>\n              <span class="product-badge badge-live">Available Now · Invitation Only</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="mailto:hello@beaccessible.co.za?subject=BiasLens%20request%20for%20consideration" aria-label="Request consideration for BiasLens access">Request Consideration <span aria-hidden="true">→</span></a></div>',
+        "BiasLens invitation-only card",
     ),
     (
         '<h3 id="product-2-heading">GrantFlow AI™</h3>\n              <p>End-to-end automated grant management with AI scoring, adjudication, and M&amp;E dashboards for CSI divisions.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
@@ -98,6 +98,7 @@ required = (
     'href="privacy.html"',
     'href="accessibility.html"',
     'href="https://udl-educator-hub.netlify.app/"',
+    '>Available Now · Invitation Only<',
     '>Available Now<',
     '>Demonstration<',
     'AA baseline, with AAA criteria applied wherever reasonably achievable',
