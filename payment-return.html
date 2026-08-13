@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check payment status | BeAccessible</title>
+  <meta name="description" content="Check whether Payfast Sandbox payment verification has completed for your BeAccessible AI Cost Audit order.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><span>BeAccessible</span></a><nav aria-label="Primary"><ul><li><a href="products.html">Products</a></li><li><a href="index.html#contact">Contact</a></li></ul></nav></div></header>
+  <main id="main">
+    <div class="page-hero"><div class="container content-narrow"><div class="breadcrumbs"><a href="index.html">Home</a> / Payment status</div><h1>Check your payment status</h1><p class="lead">Returning from Payfast does not by itself confirm that payment was successful.</p></div></div>
+    <section><div class="container content-narrow">
+      <p><strong>Order reference:</strong> <span id="order-reference">Not available</span></p>
+      <div id="payment-status" class="notice" role="status" aria-live="polite" aria-atomic="true">Checking for a verified payment notification…</div>
+      <button id="check-status" class="btn" type="button" hidden>Check payment status again</button>
+      <h2>What happens next</h2>
+      <p>Fulfilment begins only after BeAccessible receives and verifies the Payfast payment notification. When payment is verified, BeAccessible will send accessible intake instructions to the email address supplied at checkout.</p>
+      <p>If confirmation remains pending, wait a moment and use the button above. You may also email <a href="mailto:hello@beaccessible.co.za?subject=AI%20Cost%20Audit%20payment%20status">hello@beaccessible.co.za</a> with your order reference. Pending does not necessarily mean payment failed.</p>
+      <p><a href="ai-cost-audit.html">Return to the AI Cost Audit</a> or <a href="products.html">view all products</a>.</p>
+    </div></section>
+  </main>
+  <footer class="footer"><div class="container footer-links"><a href="terms.html">Terms &amp; Conditions</a><a href="refund-cancellation-delivery.html">Refund, Cancellation &amp; Delivery Policy</a><a href="privacy.html">Privacy Policy</a><a href="accessibility.html">Accessibility Statement</a></div><div class="container compliance-note"><strong>Accessibility Compliance Note:</strong> Standards Applied — WCAG 2.2 AA minimum. Key Measures — semantic status messaging, keyboard-operable manual refresh, visible focus, no automatic timeout and text-based state. Known Limitations — live screen-reader testing remains required on the branch deployment.</div></footer>
+  <script src="payment-status.js" defer></script>
+</body>
+</html>
