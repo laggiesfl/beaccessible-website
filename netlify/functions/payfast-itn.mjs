@@ -121,18 +121,30 @@ export function createPayfastItnHandler({
 
     const expectedSignature = generateItnSignature(fields, config.passphrase);
     if (!secureEqual(fields.signature, expectedSignature)) {
+      console.warn('Payfast ITN rejected.', { stage: 'signature' });
       return response(400, 'Invalid notification.');
     }
 
     const order = await getOrder(fields.m_payment_id);
-    if (!order) return response(400, 'Invalid notification.');
-    if (fields.payment_status !== 'COMPLETE') return response(400, 'Invalid notification.');
-    if (fields.merchant_id !== config.merchantId) return response(400, 'Invalid notification.');
+    if (!order) {
+      console.warn('Payfast ITN rejected.', { stage: 'order' });
+      return response(400, 'Invalid notification.');
+    }
+    if (fields.payment_status !== 'COMPLETE') {
+      console.warn('Payfast ITN rejected.', { stage: 'payment-status' });
+      return response(400, 'Invalid notification.');
+    }
+    if (fields.merchant_id !== config.merchantId) {
+      console.warn('Payfast ITN rejected.', { stage: 'merchant' });
+      return response(400, 'Invalid notification.');
+    }
     if (!amountMatches(order.amountCents, fields.amount_gross)) {
+      console.warn('Payfast ITN rejected.', { stage: 'amount' });
       return response(400, 'Invalid notification.');
     }
 
     if (!(await isPayfastSource(getSourceIp(event), resolveHost))) {
+      console.warn('Payfast ITN rejected.', { stage: 'source' });
       return response(400, 'Invalid notification.');
     }
 
@@ -148,13 +160,17 @@ export function createPayfastItnHandler({
     } catch {
       serverValid = false;
     }
-    if (!serverValid) return response(400, 'Invalid notification.');
+    if (!serverValid) {
+      console.warn('Payfast ITN rejected.', { stage: 'server-validation' });
+      return response(400, 'Invalid notification.');
+    }
 
     await markOrderPaid(order.orderRef, {
       payfastPaymentId: fields.pf_payment_id,
       paymentStatus: fields.payment_status,
       paidAt: now().toISOString()
     });
+    console.info('Payfast ITN verified and order marked paid.');
     return response(200, 'OK');
   };
 }
