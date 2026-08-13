@@ -71,9 +71,14 @@ replace_once(
 )
 
 replace_once(
-    '<div class="hero-stat-number">AAA</div>\n              <div class="hero-stat-label">WCAG 2.2 compliance across all deliverables</div>',
-    '<div class="hero-stat-number">WCAG 2.2</div>\n              <div class="hero-stat-label">AA baseline, with AAA criteria applied wherever reasonably achievable</div>',
-    "homepage WCAG standard claim",
+    '<div class="hero-stat-number">AAA</div>',
+    '<div class="hero-stat-number">WCAG 2.2</div>',
+    "homepage WCAG standard value",
+)
+replace_once(
+    '<div class="hero-stat-label">WCAG 2.2 compliance across all deliverables</div>',
+    '<div class="hero-stat-label">AA baseline, with AAA criteria applied wherever reasonably achievable</div>',
+    "homepage WCAG standard label",
 )
 
 replace_once(
