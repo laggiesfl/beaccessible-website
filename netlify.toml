@@ -2,6 +2,10 @@
   command = "python3 scripts/apply_phase2_homepage.py"
   publish = "."
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]
