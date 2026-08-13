@@ -21,7 +21,7 @@ replace_once(
 product_updates = [
     (
         '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Algorithmic bias testing and accountability platform. SA AI Policy, EU AI Act, and IBM bias taxonomy aligned.</p>\n              <span class="product-badge badge-live">Live Demo</span>',
-        '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Algorithmic bias testing and accountability platform. SA AI Policy, EU AI Act, and IBM bias taxonomy aligned.</p>\n              <span class="product-badge badge-live">Available Now</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="products.html#biaslens" aria-label="Explore BiasLens assessment and licensing options">Explore BiasLens <span aria-hidden="true">→</span></a></div>',
+        '<h3 id="product-1-heading">BiasLens™</h3>\n              <p>Algorithmic bias testing and accountability platform. SA AI Policy, EU AI Act, and IBM bias taxonomy aligned.</p>\n              <span class="product-badge badge-live">Available Now</span>\n              <div style="margin-top:.75rem"><a class="service-link" href="products.html" aria-label="Explore BiasLens assessment and licensing options">Explore BiasLens <span aria-hidden="true">→</span></a></div>',
         "BiasLens card",
     ),
     (
