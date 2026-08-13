@@ -74,8 +74,8 @@ function parseInput(event) {
   return {};
 }
 
-function sandboxConfig(env) {
-  const baseUrl = env.DEPLOY_PRIME_URL || env.URL;
+function sandboxConfig(env, event) {
+  const baseUrl = env.DEPLOY_PRIME_URL || env.URL || event.rawUrl;
   if (
     env.PAYFAST_MODE !== 'sandbox' ||
     !env.PAYFAST_SANDBOX_MERCHANT_ID ||
@@ -89,6 +89,7 @@ function sandboxConfig(env) {
   try {
     const url = new URL(baseUrl);
     if (url.protocol !== 'https:') return null;
+    if (!env.DEPLOY_PRIME_URL && !env.URL && !url.hostname.endsWith('.netlify.app')) return null;
     return {
       baseUrl: url.origin,
       merchantId: env.PAYFAST_SANDBOX_MERCHANT_ID,
@@ -162,7 +163,7 @@ export function createStartPaymentHandler({
     }
 
     const product = getProduct(validation.value.productCode);
-    const config = sandboxConfig(env);
+    const config = sandboxConfig(env, event);
     if (!product || !config) {
       return errorPage(['Payfast Sandbox is not configured. Please try again later.'], 503);
     }
