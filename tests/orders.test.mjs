@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createOrderRepository } from '../netlify/functions/lib/orders.mjs';
+import * as orders from '../netlify/functions/lib/orders.mjs';
 import { getProduct } from '../netlify/functions/lib/catalog.mjs';
+
+const { createOrderRepository } = orders;
 
 function createMemoryStore() {
   const values = new Map();
@@ -34,6 +36,18 @@ const customer = {
   email: 'customer@example.com',
   organisation: 'Example Org'
 };
+
+test('site order storage uses the current named Netlify Blobs configuration', () => {
+  const expectedStore = createMemoryStore();
+  const store = orders.createSiteOrderStore?.((options) => {
+    if (options?.name !== 'beaccessible-orders' || options?.consistency !== 'strong') {
+      throw new Error('Invalid Netlify Blobs store configuration.');
+    }
+    return expectedStore;
+  });
+
+  assert.equal(store, expectedStore);
+});
 
 test('new orders have unique dated references and authoritative pending state', async () => {
   const repository = createRepository();

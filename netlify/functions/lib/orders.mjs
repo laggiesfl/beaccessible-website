@@ -58,8 +58,12 @@ export function createOrderRepository({
 
 let defaultRepository;
 
+export function createSiteOrderStore(getStoreImpl = getStore) {
+  return getStoreImpl({ name: 'beaccessible-orders', consistency: 'strong' });
+}
+
 function getDefaultRepository() {
-  defaultRepository ??= createOrderRepository({ store: getStore('beaccessible-orders') });
+  defaultRepository ??= createOrderRepository({ store: createSiteOrderStore() });
   return defaultRepository;
 }
 
