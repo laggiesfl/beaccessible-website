@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createStartPaymentHandler } from '../netlify/functions/start-payment.mjs';
+import * as startPayment from '../netlify/functions/start-payment.mjs';
+
+const { createStartPaymentHandler } = startPayment;
 
 const sandboxEnv = {
   PAYFAST_MODE: 'sandbox',
@@ -32,6 +34,23 @@ function createHarness(env = sandboxEnv) {
   });
   return { handler, created };
 }
+
+test('modern Netlify Function adapter passes requests to the payment handler', async () => {
+  const fetchHandler = startPayment.createFetchHandler?.(async (event) => ({
+    statusCode: event.httpMethod === 'POST' && event.rawUrl.endsWith('/start-payment') ? 201 : 500,
+    headers: { 'Content-Type': 'text/plain', 'X-Test': 'adapter' },
+    body: event.body
+  }));
+  const response = await fetchHandler?.(new Request('https://example.netlify.app/start-payment', {
+    method: 'POST',
+    headers: { 'content-type': 'text/plain' },
+    body: 'request body'
+  }));
+
+  assert.equal(response?.status, 201);
+  assert.equal(response?.headers.get('x-test'), 'adapter');
+  assert.equal(await response?.text(), 'request body');
+});
 
 test('unknown product is rejected without creating an order', async () => {
   const { handler, created } = createHarness();

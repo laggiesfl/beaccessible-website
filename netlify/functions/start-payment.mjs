@@ -165,6 +165,14 @@ export function createStartPaymentHandler({
     const product = getProduct(validation.value.productCode);
     const config = sandboxConfig(env, event);
     if (!product || !config) {
+      console.error('Payment start configuration unavailable.', {
+        hasProduct: Boolean(product),
+        mode: env.PAYFAST_MODE,
+        hasMerchantId: Boolean(env.PAYFAST_SANDBOX_MERCHANT_ID),
+        hasMerchantKey: Boolean(env.PAYFAST_SANDBOX_MERCHANT_KEY),
+        hasPassphrase: Boolean(env.PAYFAST_SANDBOX_PASSPHRASE),
+        hasBaseUrl: Boolean(env.DEPLOY_PRIME_URL || env.URL || event.rawUrl)
+      });
       return errorPage(['Payfast Sandbox is not configured. Please try again later.'], 503);
     }
 
@@ -179,7 +187,11 @@ export function createStartPaymentHandler({
         },
         policyVersion: POLICY_VERSION
       });
-    } catch {
+    } catch (error) {
+      console.error('Pending order creation failed.', {
+        name: error instanceof Error ? error.name : 'UnknownError',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
       return errorPage(['The pending order could not be created. Please try again later.'], 503);
     }
 
@@ -201,4 +213,21 @@ export function createStartPaymentHandler({
   };
 }
 
-export const handler = createStartPaymentHandler();
+const handler = createStartPaymentHandler();
+
+export function createFetchHandler(legacyHandler) {
+  return async function fetchHandler(request) {
+    const result = await legacyHandler({
+      httpMethod: request.method,
+      rawUrl: request.url,
+      headers: Object.fromEntries(request.headers),
+      body: request.method === 'GET' || request.method === 'HEAD' ? '' : await request.text()
+    });
+    return new Response(result.body, {
+      status: result.statusCode,
+      headers: result.headers
+    });
+  };
+}
+
+export default createFetchHandler(handler);
