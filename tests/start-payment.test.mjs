@@ -97,6 +97,27 @@ test('valid request renders only a signed Payfast Sandbox form with a manual fal
   assert.doesNotMatch(response.body, /https:\/\/www\.payfast\.co\.za/);
 });
 
+test('deploy preview callbacks use the canonical PR preview hostname', async () => {
+  const previewEnv = {
+    ...sandboxEnv,
+    CONTEXT: 'deploy-preview',
+    REVIEW_ID: '2',
+    SITE_NAME: 'profound-pony-32a52e',
+    DEPLOY_PRIME_URL: 'https://phase-3-payfast-gate--profound-pony-32a52e.netlify.app'
+  };
+  const { handler } = createHarness(previewEnv);
+  const response = await handler({
+    httpMethod: 'POST',
+    rawUrl: 'https://phase-3-payfast-gate--profound-pony-32a52e.netlify.app/.netlify/functions/start-payment',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(validInput())
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.match(response.body, /name="return_url" value="https:\/\/deploy-preview-2--profound-pony-32a52e\.netlify\.app\/payment-return\.html/);
+  assert.match(response.body, /name="notify_url" value="https:\/\/deploy-preview-2--profound-pony-32a52e\.netlify\.app\/\.netlify\/functions\/payfast-itn"/);
+});
+
 test('manual Netlify preview derives its secure site address from the request URL', async () => {
   const { DEPLOY_PRIME_URL, ...previewEnv } = sandboxEnv;
   const { handler } = createHarness(previewEnv);
