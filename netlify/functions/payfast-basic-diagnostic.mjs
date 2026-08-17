@@ -100,20 +100,19 @@ export function createDiagnosticHandler({ env = process.env } = {}) {
       m_payment_id: 'DIAGNOSTIC-001'
     };
 
-    const returnOnly = signed({
+    const previewReturnFields = {
       merchant_id: merchantId,
       merchant_key: merchantKey,
       return_url: `${baseUrl}/payment-return.html`,
       amount: '3500.00',
       item_name: 'BeAccessible AI Cost Audit'
-    }, passphrase);
+    };
+
+    const returnOnly = signed(previewReturnFields, passphrase);
 
     const returnWithQuery = signed({
-      merchant_id: merchantId,
-      merchant_key: merchantKey,
-      return_url: `${baseUrl}/payment-return.html?order=DIAGNOSTIC-001`,
-      amount: '3500.00',
-      item_name: 'BeAccessible AI Cost Audit'
+      ...previewReturnFields,
+      return_url: `${baseUrl}/payment-return.html?order=DIAGNOSTIC-001`
     }, passphrase);
 
     const cancelOnly = signed({
@@ -128,6 +127,16 @@ export function createDiagnosticHandler({ env = process.env } = {}) {
       merchant_id: merchantId,
       merchant_key: merchantKey,
       notify_url: `${baseUrl}/.netlify/functions/payfast-itn`,
+      amount: '3500.00',
+      item_name: 'BeAccessible AI Cost Audit'
+    }, passphrase);
+
+    const previewReturnNoSignature = { ...previewReturnFields };
+
+    const exampleReturnSigned = signed({
+      merchant_id: merchantId,
+      merchant_key: merchantKey,
+      return_url: 'https://www.example.com/success',
       amount: '3500.00',
       item_name: 'BeAccessible AI Cost Audit'
     }, passphrase);
@@ -160,6 +169,11 @@ ${testSection('Test G', 'return URL only, no query string', 'Adds only the retur
 ${testSection('Test H', 'return URL only, with order query string', 'Adds only the return URL with the same order query parameter used by the checkout.', returnWithQuery)}
 ${testSection('Test I', 'cancel URL only', 'Adds only the cancellation URL without an order query parameter.', cancelOnly)}
 ${testSection('Test J', 'notify URL only', 'Adds only the PayFast ITN notification URL.', notifyOnly)}
+
+<h2>Return URL isolation</h2>
+<p>These distinguish URL acceptance from signature encoding.</p>
+${testSection('Test K', 'preview return URL without signature', 'Uses the same Netlify preview return URL as Test G, but omits the signature.', previewReturnNoSignature)}
+${testSection('Test L', 'example.com return URL with signature', 'Uses a simple standard HTTPS return URL with the same signature method as Test G.', exampleReturnSigned)}
 </main>
 </body>
 </html>`);
