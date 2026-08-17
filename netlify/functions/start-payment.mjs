@@ -77,6 +77,17 @@ function parseInput(event) {
   return {};
 }
 
+function canonicalDeployPreviewUrl(env) {
+  if (
+    env.CONTEXT !== 'deploy-preview' ||
+    !/^\d+$/.test(env.REVIEW_ID ?? '') ||
+    !/^[a-z0-9-]+$/.test(env.SITE_NAME ?? '')
+  ) {
+    return null;
+  }
+  return `https://deploy-preview-${env.REVIEW_ID}--${env.SITE_NAME}.netlify.app`;
+}
+
 function sandboxConfig(env, event) {
   let requestUrl;
   try {
@@ -87,7 +98,7 @@ function sandboxConfig(env, event) {
   const previewUrl = requestUrl?.protocol === 'https:' && requestUrl.hostname.endsWith('.netlify.app')
     ? requestUrl.origin
     : null;
-  const baseUrl = env.DEPLOY_PRIME_URL || previewUrl || env.URL;
+  const baseUrl = canonicalDeployPreviewUrl(env) || env.DEPLOY_PRIME_URL || previewUrl || env.URL;
   if (
     env.PAYFAST_MODE !== 'sandbox' ||
     !env.PAYFAST_SANDBOX_MERCHANT_ID ||
