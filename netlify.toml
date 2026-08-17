@@ -6,7 +6,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Phase 3 branch redeploy trigger: re-bundle all Netlify Functions after ITN route verification.
+# Phase 3 branch redeploy trigger: refresh Deploy Preview after restoring sandbox Merchant ID context.
 
 [[headers]]
   for = "/*"
