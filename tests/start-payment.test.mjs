@@ -97,6 +97,26 @@ test('valid request renders only a signed Payfast Sandbox form with a manual fal
   assert.doesNotMatch(response.body, /https:\/\/www\.payfast\.co\.za/);
 });
 
+test('sandbox credentials are trimmed before they are signed and posted', async () => {
+  const { handler } = createHarness({
+    ...sandboxEnv,
+    PAYFAST_SANDBOX_MERCHANT_ID: ' 10000100 ',
+    PAYFAST_SANDBOX_MERCHANT_KEY: ' 46f0cd694581a ',
+    PAYFAST_SANDBOX_PASSPHRASE: ' fixture passphrase '
+  });
+  const response = await handler({
+    httpMethod: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(validInput())
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.match(response.body, /name="merchant_id" value="10000100"/);
+  assert.match(response.body, /name="merchant_key" value="46f0cd694581a"/);
+  assert.doesNotMatch(response.body, /value=" 10000100 "/);
+  assert.doesNotMatch(response.body, /value=" 46f0cd694581a "/);
+});
+
 test('deploy preview callbacks use the canonical PR preview hostname', async () => {
   const previewEnv = {
     ...sandboxEnv,
