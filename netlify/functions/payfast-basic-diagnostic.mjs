@@ -21,6 +21,12 @@ function htmlResponse(statusCode, body) {
   };
 }
 
+function formFields(fields) {
+  return Object.entries(fields)
+    .map(([name, value]) => `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`)
+    .join('\n');
+}
+
 export function createDiagnosticHandler({ env = process.env } = {}) {
   return async function diagnostic(event) {
     if (event.httpMethod !== 'GET') {
@@ -41,31 +47,65 @@ export function createDiagnosticHandler({ env = process.env } = {}) {
       return htmlResponse(503, '<!doctype html><html lang="en"><body><main><h1>Sandbox diagnostic unavailable</h1></main></body></html>');
     }
 
-    const fields = {
+    const baseFields = {
       merchant_id: merchantId,
       merchant_key: merchantKey,
       amount: '3500.00',
       item_name: 'BeAccessible AI Cost Audit'
     };
-    fields.signature = generatePaymentSignature(fields, passphrase);
 
-    const inputs = Object.entries(fields)
-      .map(([name, value]) => `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`)
-      .join('\n');
+    const noSignature = { ...baseFields };
+    const signatureWithoutPassphrase = {
+      ...baseFields,
+      signature: generatePaymentSignature(baseFields)
+    };
+    const signatureWithPassphrase = {
+      ...baseFields,
+      signature: generatePaymentSignature(baseFields, passphrase)
+    };
 
     return htmlResponse(200, `<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PayFast sandbox diagnostic</title></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PayFast sandbox diagnostic | BeAccessible</title>
+<style>
+body{font-family:Arial,sans-serif;line-height:1.5;max-width:48rem;margin:2rem auto;padding:0 1rem}button{font:inherit;padding:.8rem 1rem;margin:.5rem 0;min-height:44px}section{margin:1.5rem 0;padding:1rem;border:2px solid #333}code{overflow-wrap:anywhere}
+</style>
+</head>
 <body>
 <main>
-<h1>PayFast sandbox diagnostic</h1>
-<p>This temporary diagnostic sends the same basic field set that succeeded in PayFast's integration tester. No real money is charged.</p>
-<form id="payfast-diagnostic" action="${sandboxProcessUrl()}" method="post">
-${inputs}
-<button type="submit">Continue to PayFast Sandbox</button>
+<h1>PayFast sandbox signature diagnostic</h1>
+<p>These are test transactions only. No real money will be charged. No Merchant Key, passphrase, or signature is displayed.</p>
+
+<section>
+<h2>Test A — no signature</h2>
+<p>This checks whether PayFast accepts the same four basic fields without a signature.</p>
+<form action="${sandboxProcessUrl()}" method="post" target="_blank">
+${formFields(noSignature)}
+<button type="submit">Run Test A</button>
 </form>
+</section>
+
+<section>
+<h2>Test B — signature without passphrase</h2>
+<p>This checks whether PayFast expects a signature that does not include the configured passphrase.</p>
+<form action="${sandboxProcessUrl()}" method="post" target="_blank">
+${formFields(signatureWithoutPassphrase)}
+<button type="submit">Run Test B</button>
+</form>
+</section>
+
+<section>
+<h2>Test C — signature with Netlify passphrase</h2>
+<p>This is the signature method currently used by the BeAccessible checkout.</p>
+<form action="${sandboxProcessUrl()}" method="post" target="_blank">
+${formFields(signatureWithPassphrase)}
+<button type="submit">Run Test C</button>
+</form>
+</section>
 </main>
-<script>document.getElementById('payfast-diagnostic').submit();</script>
 </body>
 </html>`);
   };
