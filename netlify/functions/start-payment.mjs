@@ -98,12 +98,23 @@ function sandboxConfig(env, event) {
   const previewUrl = requestUrl?.protocol === 'https:' && requestUrl.hostname.endsWith('.netlify.app')
     ? requestUrl.origin
     : null;
-  const baseUrl = canonicalDeployPreviewUrl(env) || env.DEPLOY_PRIME_URL || previewUrl || env.URL;
+  const rawBaseUrl = canonicalDeployPreviewUrl(env) || env.DEPLOY_PRIME_URL || previewUrl || env.URL;
+  const baseUrl = typeof rawBaseUrl === 'string' ? rawBaseUrl.trim() : rawBaseUrl;
+  const merchantId = typeof env.PAYFAST_SANDBOX_MERCHANT_ID === 'string'
+    ? env.PAYFAST_SANDBOX_MERCHANT_ID.trim()
+    : '';
+  const merchantKey = typeof env.PAYFAST_SANDBOX_MERCHANT_KEY === 'string'
+    ? env.PAYFAST_SANDBOX_MERCHANT_KEY.trim()
+    : '';
+  const passphrase = typeof env.PAYFAST_SANDBOX_PASSPHRASE === 'string'
+    ? env.PAYFAST_SANDBOX_PASSPHRASE.trim()
+    : '';
+
   if (
     env.PAYFAST_MODE !== 'sandbox' ||
-    !env.PAYFAST_SANDBOX_MERCHANT_ID ||
-    !env.PAYFAST_SANDBOX_MERCHANT_KEY ||
-    !env.PAYFAST_SANDBOX_PASSPHRASE ||
+    !merchantId ||
+    !merchantKey ||
+    !passphrase ||
     !baseUrl
   ) {
     return null;
@@ -115,9 +126,9 @@ function sandboxConfig(env, event) {
     if (!env.DEPLOY_PRIME_URL && !env.URL && !url.hostname.endsWith('.netlify.app')) return null;
     return {
       baseUrl: url.origin,
-      merchantId: env.PAYFAST_SANDBOX_MERCHANT_ID,
-      merchantKey: env.PAYFAST_SANDBOX_MERCHANT_KEY,
-      passphrase: env.PAYFAST_SANDBOX_PASSPHRASE
+      merchantId,
+      merchantKey,
+      passphrase
     };
   } catch {
     return null;
