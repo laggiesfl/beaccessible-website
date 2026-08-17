@@ -38,7 +38,10 @@ const PAYMENT_FIELD_ORDER = [
 ];
 
 function encodeValue(value) {
-  return new URLSearchParams([['value', value]]).toString().slice('value='.length);
+  return new URLSearchParams([['value', value]])
+    .toString()
+    .slice('value='.length)
+    .replaceAll('*', '%2A');
 }
 
 function signPairs(pairs, passphrase) {
