@@ -6,6 +6,8 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Phase 3 branch redeploy trigger: re-bundle all Netlify Functions after ITN route verification.
+
 [[headers]]
   for = "/*"
   [headers.values]
