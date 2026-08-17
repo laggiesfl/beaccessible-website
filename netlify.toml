@@ -7,6 +7,7 @@
   node_bundler = "esbuild"
 
 # Phase 3 branch redeploy trigger: refresh Deploy Preview after restoring sandbox Merchant ID context.
+# Second refresh after confirmed Merchant ID creation in Netlify UI.
 
 [[headers]]
   for = "/*"
