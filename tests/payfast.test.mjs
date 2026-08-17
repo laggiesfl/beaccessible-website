@@ -30,6 +30,20 @@ test('payment signature uses Payfast field order and form encoding', () => {
   );
 });
 
+test('payment signature matches PHP urlencode semantics for asterisks', () => {
+  const fields = {
+    merchant_id: '10000100',
+    merchant_key: 'abc123',
+    amount: '100.00',
+    item_name: 'Test*Item'
+  };
+
+  assert.equal(
+    generatePaymentSignature(fields, 'abc*123'),
+    'ddae38eb8ebfc3a6d45dee52375cbcea'
+  );
+});
+
 test('payment signature trims values and ignores blanks', () => {
   assert.equal(
     generatePaymentSignature({ merchant_id: ' 10000100 ', merchant_key: '', amount: ' 3500.00 ' }),
