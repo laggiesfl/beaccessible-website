@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Accessibility statement for the Phase 1 TrustOS consolidation demonstration.">
+  <title>TrustOS Accessibility Statement | BeAccessible</title>
+  <style>
+    :root { --blue:#1F3F6B; --link:#174A82; --pale:#F0F5FB; --white:#FFFFFF; --ink:#0F1F35; --border:#B7C8DE; --focus:#FFB300; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--pale); font:1rem/1.65 Arial,Helvetica,sans-serif; }
+    a { color:var(--link); }
+    :focus-visible { outline:4px solid var(--focus); outline-offset:3px; }
+    .skip-link { position:absolute; top:-6rem; left:1rem; padding:.75rem; color:var(--blue); background:var(--white); font-weight:700; }
+    .skip-link:focus { top:1rem; }
+    header { color:var(--white); background:var(--blue); }
+    header div, main, footer { width:min(100% - 2rem, 56rem); margin-inline:auto; }
+    header div { padding:1.5rem 0; }
+    h1 { margin:0; line-height:1.15; }
+    main { margin-block:1.25rem; padding:1.25rem; background:var(--white); border:1px solid var(--border); border-radius:.75rem; }
+    h2 { color:var(--blue); }
+    .status { padding:1rem; background:#E6EEF8; border-left:.35rem solid var(--blue); }
+    footer { padding-bottom:2rem; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header><div><h1>TrustOS Accessibility Statement</h1><p>Phase 1 consolidation demonstration</p></div></header>
+  <main id="main-content">
+    <p><a href="trustos.html">Return to TrustOS</a></p>
+    <p class="status"><strong>Current status:</strong> designed toward WCAG 2.2 Level AA. Formal conformance has not yet been established.</p>
+
+    <h2>Accessibility measures</h2>
+    <ul>
+      <li>Semantic page regions and heading structure.</li>
+      <li>Skip links and clearly visible keyboard focus.</li>
+      <li>Native buttons and links with non-colour-only states.</li>
+      <li>High-contrast text and controls.</li>
+      <li>Reduced-motion support.</li>
+      <li>Descriptive titles for embedded modules and full-page alternatives.</li>
+    </ul>
+
+    <h2>Known limitations</h2>
+    <ul>
+      <li>The embedded TrustOps Core and GrantFlow prototypes retain their existing accessibility limitations.</li>
+      <li>Nested scrolling inside an embedded module may be less convenient for some keyboard, screen magnification, and mobile users; each module can also be opened as a full page.</li>
+      <li>Independent screen-reader testing and testing with disabled users are pending.</li>
+      <li>No third-party accessibility certification is claimed.</li>
+    </ul>
+
+    <h2>Feedback and support</h2>
+    <p>If you encounter a barrier, email <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>. Please include the page or module, what you were trying to do, and the assistive technology or browser used if you are comfortable sharing it.</p>
+
+    <h2>Assessment approach</h2>
+    <p>Phase 1 uses automated structural checks and keyboard-oriented regression checks. A production release requires manual keyboard review, screen-reader testing, zoom and reflow testing, and disabled-user evaluation.</p>
+    <p><strong>Last reviewed:</strong> 20 August 2026</p>
+  </main>
+  <footer><p>BeAccessible · Cape Town, South Africa · <a href="trustos-privacy.html">Privacy notice</a></p></footer>
+</body>
+</html>

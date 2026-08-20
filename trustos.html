@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TrustOS modular operating system demonstration for development trusts and grant makers.">
+  <title>TrustOS | BeAccessible</title>
+  <style>
+    :root {
+      --deep-blue: #1F3F6B;
+      --mid-blue: #2F5C9A;
+      --soft-blue: #4A78B5;
+      --white: #FFFFFF;
+      --tint: #E6EEF8;
+      --pale: #F0F5FB;
+      --ink: #0F1F35;
+      --muted: #2C3E5C;
+      --border: #B7C8DE;
+      --focus: #FFB300;
+      --radius: 0.75rem;
+    }
+
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--pale);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: #174A82; }
+    a:hover { text-decoration-thickness: 0.18em; }
+    :focus-visible {
+      outline: 4px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 0.2rem;
+    }
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -8rem;
+      z-index: 20;
+      padding: 0.85rem 1rem;
+      background: var(--white);
+      color: var(--deep-blue);
+      font-weight: 700;
+      border: 2px solid var(--deep-blue);
+    }
+    .skip-link:focus { top: 1rem; }
+    header {
+      color: var(--white);
+      background: var(--deep-blue);
+      border-bottom: 0.35rem solid var(--soft-blue);
+    }
+    .header-inner,
+    main,
+    footer {
+      width: min(100% - 2rem, 92rem);
+      margin-inline: auto;
+    }
+    .header-inner { padding: 1.25rem 0 1.4rem; }
+    .brand-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+    }
+    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; }
+    .tagline { margin: 0.45rem 0 0; max-width: 58rem; font-size: 1.08rem; }
+    .licence-label {
+      display: inline-flex;
+      flex-direction: column;
+      padding: 0.55rem 0.75rem;
+      color: var(--ink);
+      background: var(--white);
+      border-radius: 0.5rem;
+    }
+    .licence-label small { font-weight: 700; }
+    main { padding-block: 1.25rem 2rem; }
+    .notice {
+      padding: 1rem;
+      background: #FFF7DB;
+      border: 2px solid #8A5A00;
+      border-radius: var(--radius);
+    }
+    .notice strong { display: block; }
+    .module-layout {
+      display: grid;
+      grid-template-columns: minmax(16rem, 21rem) minmax(0, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+      align-items: start;
+    }
+    .module-navigation,
+    .workspace,
+    .unavailable,
+    .empty-state {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 0.2rem 0.75rem rgba(31, 63, 107, 0.1);
+    }
+    .module-navigation { padding: 1rem; }
+    .module-navigation h2,
+    .workspace h2,
+    .unavailable h2 { margin-top: 0; }
+    .module-buttons { display: grid; gap: 0.7rem; }
+    .module-button {
+      width: 100%;
+      min-height: 4.5rem;
+      padding: 0.85rem;
+      color: var(--deep-blue);
+      background: var(--white);
+      border: 2px solid var(--mid-blue);
+      border-radius: 0.55rem;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+    }
+    .module-button strong,
+    .module-button span { display: block; }
+    .module-button span { margin-top: 0.25rem; color: var(--muted); font-size: 0.92rem; }
+    .module-button:hover { background: var(--tint); }
+    .module-button.is-active {
+      color: var(--white);
+      background: var(--deep-blue);
+      border-color: var(--deep-blue);
+      box-shadow: inset 0 0 0 2px var(--white);
+    }
+    .module-button.is-active span { color: var(--white); }
+    .unavailable { margin-top: 1rem; padding: 1rem; }
+    .unavailable ul { margin: 0; padding-left: 1.2rem; }
+    .unavailable li + li { margin-top: 0.6rem; }
+    .unavailable span { display: block; color: var(--muted); }
+    .workspace { overflow: hidden; }
+    .workspace-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.8rem 1.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .workspace-header h2 { margin-bottom: 0.2rem; }
+    .workspace-header p { margin: 0; max-width: 52rem; color: var(--muted); }
+    .standalone-link {
+      display: inline-block;
+      padding: 0.65rem 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    iframe {
+      display: block;
+      width: 100%;
+      min-height: 74vh;
+      height: 60rem;
+      border: 0;
+      background: var(--white);
+    }
+    .empty-state { padding: 1.25rem; }
+    .status-region { min-height: 1.5em; margin-top: 0.75rem; font-weight: 700; }
+    footer { padding-block: 0.5rem 2rem; }
+    .compliance-note {
+      padding: 1rem;
+      background: var(--tint);
+      border-left: 0.35rem solid var(--deep-blue);
+    }
+    .compliance-note h2 { margin-top: 0; font-size: 1.15rem; }
+    .compliance-note p:last-child { margin-bottom: 0; }
+    @media (max-width: 60rem) {
+      .module-layout { grid-template-columns: 1fr; }
+      iframe { height: 52rem; }
+    }
+    @media (max-width: 38rem) {
+      .header-inner, main, footer { width: min(100% - 1rem, 92rem); }
+      .module-button { min-height: 3.5rem; }
+      iframe { height: 44rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#module-nav">Skip to module selection</a>
+  <a class="skip-link" href="#module-workspace">Skip to module workspace</a>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-line">
+        <div>
+          <h1>TrustOS</h1>
+          <p class="tagline">One modular operating environment for trust administration and the full grant lifecycle.</p>
+        </div>
+        <div class="licence-label">
+          <small>Licensed for</small>
+          <span id="licensed-for">Loading licence</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="notice" aria-labelledby="demo-heading">
+      <strong id="demo-heading">Phase 1 consolidation demonstration</strong>
+      <span>Modules use sample data and continue to operate independently. This version does not yet provide shared sign-in, a shared live database, or an automated AI decision engine. Do not enter personal or confidential information.</span>
+    </section>
+
+    <div class="module-layout">
+      <div>
+        <nav id="module-nav" class="module-navigation" aria-labelledby="module-nav-heading">
+          <h2 id="module-nav-heading">Your modules</h2>
+          <p>Choose an included module. Your licence can contain either module or both.</p>
+          <div id="module-buttons" class="module-buttons"></div>
+        </nav>
+
+        <section id="unavailable-region" class="unavailable" aria-labelledby="unavailable-heading" hidden>
+          <h2 id="unavailable-heading">Other TrustOS modules</h2>
+          <ul id="unavailable-modules"></ul>
+        </section>
+      </div>
+
+      <section id="module-workspace" class="workspace" aria-labelledby="module-title">
+        <div class="workspace-header">
+          <div>
+            <h2 id="module-title">Loading module</h2>
+            <p id="module-description"></p>
+          </div>
+          <a id="standalone-link" class="standalone-link" href="trustops.html">Open module as a full page</a>
+        </div>
+        <iframe
+          id="module-frame"
+          title="TrustOps Core demonstration"
+          src="trustops.html?embedded=1"
+          loading="eager"
+          sandbox="allow-forms allow-popups allow-scripts"
+        ></iframe>
+      </section>
+
+      <section id="empty-state" class="empty-state" aria-labelledby="empty-heading" hidden>
+        <h2 id="empty-heading">No modules enabled</h2>
+        <p>Please contact your TrustOS administrator or <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>.</p>
+      </section>
+    </div>
+
+    <p id="suite-status" class="status-region" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer>
+    <section class="compliance-note" aria-labelledby="accessibility-note-heading">
+      <h2 id="accessibility-note-heading">Accessibility Compliance Note</h2>
+      <p><strong>Standards applied:</strong> WCAG 2.2 Level AA baseline, with applicable Level AAA criteria and Universal Design principles used where feasible.</p>
+      <p><strong>Measures included:</strong> semantic regions, skip links, visible keyboard focus, strong contrast, native controls, non-colour-only module states, reduced-motion support, descriptive frame titles, and full-page alternatives.</p>
+      <p><strong>Known limitations:</strong> independent screen-reader and disabled-user testing of the consolidated shell is still pending. The embedded demonstrations retain their current prototype limitations.</p>
+    </section>
+    <p>BeAccessible · Cape Town, South Africa · <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a> · <a href="trustos-privacy.html">Privacy notice</a> · <a href="trustos-accessibility.html">Accessibility statement</a></p>
+  </footer>
+
+  <script src="trustos-core.js"></script>
+  <script src="trustos-config.js"></script>
+  <script src="trustos-shell.js"></script>
+</body>
+</html>

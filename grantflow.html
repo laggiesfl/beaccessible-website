@@ -121,6 +121,22 @@
     border-color: #64748b;
     box-shadow: none;
   }
+  nav button {
+    background: var(--deep-blue);
+    border-color: var(--soft-blue);
+    box-shadow: none;
+  }
+  nav button:hover {
+    background: var(--mid-blue);
+  }
+  nav button[aria-current="page"] {
+    background: var(--soft-blue);
+    border-color: #FFFFFF;
+    box-shadow: inset 0 -4px 0 #FFFFFF;
+  }
+  nav button[aria-current="page"]:hover {
+    background: var(--soft-blue);
+  }
   button:hover, .link-button:hover { filter: brightness(1.06); }
   button:focus-visible, .link-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 3px solid var(--focus);
@@ -363,7 +379,7 @@
 </header>
 
 <nav aria-label="Primary">
-  <button type="button" onclick="show('dashboard')" aria-controls="dashboard">Dashboard</button>
+  <button type="button" class="active" onclick="show('dashboard')" aria-controls="dashboard" aria-current="page">Dashboard</button>
   <button type="button" onclick="show('applications')" aria-controls="applications">Applications</button>
   <button type="button" onclick="show('assessment')" aria-controls="assessment">Assessment</button>
   <button type="button" onclick="show('adjudication')" aria-controls="adjudication">Adjudication</button>
@@ -376,6 +392,7 @@
 <main id="main">
   <div id="liveRegion" class="banner" role="status" aria-live="polite">
     <strong>Demo guidance:</strong> Start in Applications, choose a record, score it, approve or decline it, then move to Contracting, Payments, and Monitoring to see the full enterprise journey.
+    Scoring and decisions are manual simulations; there is no live AI decision engine.
   </div>
 
   <section id="dashboard">
@@ -793,6 +810,20 @@
   </section>
 </main>
 
+<script id="grantflow-navigation-state">
+function syncGrantFlowNavigation(section) {
+  document.querySelectorAll('nav button[aria-controls]').forEach((button) => {
+    const isCurrent = button.getAttribute('aria-controls') === section;
+    button.classList.toggle('active', isCurrent);
+    if (isCurrent) {
+      button.setAttribute('aria-current', 'page');
+    } else {
+      button.removeAttribute('aria-current');
+    }
+  });
+}
+</script>
+
 <script>
 let currentApp = null;
 const seedApplications = [
@@ -806,6 +837,16 @@ let applications = JSON.parse(JSON.stringify(seedApplications));
 
 function money(n) {
   return 'R' + Number(n || 0).toLocaleString('en-ZA');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
 }
 
 function parseMoney(value) {
@@ -839,6 +880,7 @@ function show(section) {
   const target = document.getElementById(section);
   if (target) {
     target.classList.remove('hidden');
+    syncGrantFlowNavigation(section);
     setLiveMessage('Opened ' + section.replace(/([A-Z])/g, ' $1').trim() + ' view.');
   }
 }
@@ -868,7 +910,7 @@ function renderDashboard() {
 
   const risks = applications.filter((a) => a.risk !== 'None');
   document.getElementById('riskList').innerHTML = risks.length
-    ? risks.map((item) => `<div class="mini-card"><strong>${item.organisation}</strong><br/>${item.risk}</div>`).join('')
+    ? risks.map((item) => `<div class="mini-card"><strong>${escapeHtml(item.organisation)}</strong><br/>${escapeHtml(item.risk)}</div>`).join('')
     : '<div class="mini-card">No material risks flagged.</div>';
 
   const assessed = applications.filter((a) => Number(a.score || 0) > 0).length;
@@ -877,7 +919,7 @@ function renderDashboard() {
   document.getElementById('budgetRemaining').textContent = money(3400000 - approvedBudget);
 
   document.getElementById('monitorCards').innerHTML = approvedApps.length
-    ? approvedApps.map((a) => `<div class="mini-card"><strong>${a.organisation}</strong><br/>${a.reportSubmitted ? 'Latest report submitted.' : 'Report pending.'}<br/>${a.paymentReleased ? 'Payment released.' : 'Awaiting payment trigger.'}</div>`).join('')
+    ? approvedApps.map((a) => `<div class="mini-card"><strong>${escapeHtml(a.organisation)}</strong><br/>${a.reportSubmitted ? 'Latest report submitted.' : 'Report pending.'}<br/>${a.paymentReleased ? 'Payment released.' : 'Awaiting payment trigger.'}</div>`).join('')
     : '<div class="mini-card">No approved grants yet.</div>';
 }
 
@@ -894,11 +936,11 @@ function renderApplications() {
     ? rows.map((app) => `
       <tr>
         <td>${app.id}</td>
-        <td>${app.organisation}</td>
-        <td>${app.programme}</td>
+        <td>${escapeHtml(app.organisation)}</td>
+        <td>${escapeHtml(app.programme)}</td>
         <td>${money(app.amount)}</td>
         <td><span class="status ${statusClass(app.status)}">${app.status}</span></td>
-        <td>${app.reviewer}</td>
+        <td>${escapeHtml(app.reviewer)}</td>
         <td>
           <button type="button" onclick="review('${app.id}')">Review</button>
           <button type="button" class="secondary" onclick="openWorkflow('${app.id}')">Open Workflow</button>
@@ -916,11 +958,11 @@ function review(appId) {
   const app = getApp(appId);
   if (!app) return;
 
-  document.getElementById('assessmentSummary').innerHTML = `<strong>${app.organisation}</strong><br/>${app.programme} · ${money(app.amount)} requested<br/>Current status: ${app.status}<br/>Assigned reviewer: ${app.reviewer}`;
-  document.getElementById('decisionContext').innerHTML = `<strong>${app.organisation}</strong><br/>Application: ${app.id}<br/>Current score: ${app.score || 'Not yet submitted'}`;
-  document.getElementById('contractSummary').innerHTML = `<strong>${app.organisation}</strong><br/>Contract status: ${app.agreementSigned ? 'Signed' : (app.agreementGenerated ? 'Generated, awaiting signature' : 'Not generated')}<br/>Requested grant: ${money(app.amount)}`;
-  document.getElementById('paymentSummary').innerHTML = `<strong>${app.organisation}</strong><br/>Payment status: ${app.paymentReleased ? 'Released' : 'Pending'}`;
-  document.getElementById('monitoringSummary').innerHTML = `<strong>${app.organisation}</strong><br/>Monitoring status: ${app.reportSubmitted ? 'Latest report received' : 'Report outstanding'}<br/>Risk note: ${app.risk}`;
+  document.getElementById('assessmentSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>${escapeHtml(app.programme)} · ${money(app.amount)} requested<br/>Current status: ${escapeHtml(app.status)}<br/>Assigned reviewer: ${escapeHtml(app.reviewer)}`;
+  document.getElementById('decisionContext').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Application: ${escapeHtml(app.id)}<br/>Current score: ${app.score || 'Not yet submitted'}`;
+  document.getElementById('contractSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Contract status: ${app.agreementSigned ? 'Signed' : (app.agreementGenerated ? 'Generated, awaiting signature' : 'Not generated')}<br/>Requested grant: ${money(app.amount)}`;
+  document.getElementById('paymentSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Payment status: ${app.paymentReleased ? 'Released' : 'Pending'}`;
+  document.getElementById('monitoringSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Monitoring status: ${app.reportSubmitted ? 'Latest report received' : 'Report outstanding'}<br/>Risk note: ${escapeHtml(app.risk)}`;
 
   show('assessment');
 }
@@ -941,7 +983,7 @@ function submitScore() {
   app.score = Math.round((impact + governance + feasibility) / 3);
   app.status = 'Under Review';
 
-  document.getElementById('decisionContext').innerHTML = `<strong>${app.organisation}</strong><br/>Application: ${app.id}<br/>Assessment submitted with composite score: ${app.score}`;
+  document.getElementById('decisionContext').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Application: ${escapeHtml(app.id)}<br/>Assessment submitted with composite score: ${app.score}`;
   renderApplications();
   renderDashboard();
   show('adjudication');
@@ -976,7 +1018,7 @@ function generateAgreement() {
   if (app.status !== 'Approved') return setLiveMessage('Agreement generation requires an approved application.');
   app.agreementGenerated = true;
   document.getElementById('contractStatusText').textContent = 'Agreement generated and sent to applicant for signature.';
-  document.getElementById('contractSummary').innerHTML = `<strong>${app.organisation}</strong><br/>Contract status: Generated, awaiting signature<br/>Requested grant: ${money(app.amount)}`;
+  document.getElementById('contractSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>Contract status: Generated, awaiting signature<br/>Requested grant: ${money(app.amount)}`;
 }
 
 function signAgreement() {
@@ -996,7 +1038,7 @@ function releasePayment() {
   if (!app.agreementSigned) return setLiveMessage('A signed agreement is required before payment release.');
   app.paymentReleased = true;
   document.getElementById('paymentStatusText').textContent = 'First payment released successfully.';
-  document.getElementById('paymentSummary').innerHTML = `<strong>${app.organisation}</strong><br/>First disbursement released for ${money(Math.round(app.amount * 0.5))}`;
+  document.getElementById('paymentSummary').innerHTML = `<strong>${escapeHtml(app.organisation)}</strong><br/>First disbursement released for ${money(Math.round(app.amount * 0.5))}`;
   document.getElementById('paymentProgress').style.width = '100%';
   renderDashboard();
 }
@@ -1145,6 +1187,7 @@ bindBudgetEvents();
 renderApplications();
 renderDashboard();
 updateBudgetCalculator();
+syncGrantFlowNavigation('dashboard');
 runSmokeTests();
 </script>
 
@@ -1157,7 +1200,7 @@ runSmokeTests();
   </span>
   <span style="display:block; width:100%; margin-top:.35rem; color:#7AAAD8; font-size:.8rem;">
     <strong style="color:#A8C4E0;">♿ Accessibility Compliance Note:</strong>
-    Built to WCAG 2.0/2.1/2.2 Level AAA and Universal Design principles. Skip navigation, keyboard-focus styles, semantic HTML, ARIA labels, non-colour-only status cues, and strong contrast throughout.
+    Designed toward WCAG 2.2 Level AA and Universal Design principles. Skip navigation, keyboard-focus styles, semantic HTML, ARIA labels, non-colour-only status cues, and strong contrast are included. Independent assistive-technology and disabled-user testing is pending.
   </span>
 </footer>
 <!-- Chatbot temporarily disabled -- re-add <script src="chatbot.js"></script> here to re-enable -->
