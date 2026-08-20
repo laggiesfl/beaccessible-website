@@ -16,7 +16,8 @@
       --ink: #0F1F35;
       --muted: #2C3E5C;
       --border: #B7C8DE;
-      --focus: #FFB300;
+      --focus-inner: #FFFFFF;
+      --focus-outer: #0F1F35;
       --radius: 0.75rem;
     }
 
@@ -32,8 +33,9 @@
     a { color: #174A82; }
     a:hover { text-decoration-thickness: 0.18em; }
     :focus-visible {
-      outline: 4px solid var(--focus);
-      outline-offset: 3px;
+      outline: 3px solid var(--focus-inner);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 8px var(--focus-outer);
       border-radius: 0.2rem;
     }
     .skip-link {
@@ -129,6 +131,11 @@
       border-color: var(--deep-blue);
       box-shadow: inset 0 0 0 2px var(--white);
     }
+    .module-button.is-active:focus-visible {
+      box-shadow:
+        inset 0 0 0 2px var(--white),
+        0 0 0 8px var(--focus-outer);
+    }
     .module-button.is-active span { color: var(--white); }
     .unavailable { margin-top: 1rem; padding: 1rem; }
     .unavailable ul { margin: 0; padding-left: 1.2rem; }
@@ -196,8 +203,8 @@
           <p class="tagline">One modular operating environment for trust administration and the full grant lifecycle.</p>
         </div>
         <div class="licence-label">
-          <small>Licensed for</small>
-          <span id="licensed-for">Loading licence</span>
+          <small>Demo module configuration</small>
+          <span id="licensed-for">Loading configuration</span>
         </div>
       </div>
     </div>
@@ -213,7 +220,7 @@
       <div>
         <nav id="module-nav" class="module-navigation" aria-labelledby="module-nav-heading">
           <h2 id="module-nav-heading">Your modules</h2>
-          <p>Choose an included module. Your licence can contain either module or both.</p>
+          <p>Choose a module enabled for this demonstration. This configuration is presentation-only; server-side access enforcement is deferred.</p>
           <div id="module-buttons" class="module-buttons"></div>
         </nav>
 
@@ -223,26 +230,25 @@
         </section>
       </div>
 
-      <section id="module-workspace" class="workspace" aria-labelledby="module-title">
+      <section id="module-workspace" class="workspace" aria-labelledby="module-title" hidden>
         <div class="workspace-header">
           <div>
             <h2 id="module-title">Loading module</h2>
             <p id="module-description"></p>
           </div>
-          <a id="standalone-link" class="standalone-link" href="trustops.html">Open module as a full page</a>
+          <a id="standalone-link" class="standalone-link" href="#">Open module as a full page</a>
         </div>
-        <iframe
-          id="module-frame"
-          title="TrustOps Core demonstration"
-          src="trustops.html?embedded=1"
-          loading="eager"
-          sandbox="allow-forms allow-popups allow-scripts"
-        ></iframe>
+        <div id="module-frames"></div>
       </section>
 
       <section id="empty-state" class="empty-state" aria-labelledby="empty-heading" hidden>
         <h2 id="empty-heading">No modules enabled</h2>
-        <p>Please contact your TrustOS administrator or <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>.</p>
+        <p>No modules are selected in this demonstration configuration. Contact <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a> for help.</p>
+      </section>
+
+      <section id="configuration-error" class="empty-state" aria-labelledby="configuration-error-heading" hidden>
+        <h2 id="configuration-error-heading">Module configuration unavailable</h2>
+        <p>The demonstration has been kept closed because its module configuration is incomplete. Contact <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>.</p>
       </section>
     </div>
 
@@ -258,6 +264,8 @@
     </section>
     <p>BeAccessible · Cape Town, South Africa · <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a> · <a href="trustos-privacy.html">Privacy notice</a> · <a href="trustos-accessibility.html">Accessibility statement</a></p>
   </footer>
+
+  <noscript><p class="notice">JavaScript is required to validate and open the configured demonstration modules. No module has been loaded.</p></noscript>
 
   <script src="trustos-core.js"></script>
   <script src="trustos-config.js"></script>

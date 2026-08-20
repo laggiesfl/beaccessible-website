@@ -6,11 +6,13 @@
   <meta name="description" content="Privacy notice for the Phase 1 TrustOS consolidation demonstration.">
   <title>TrustOS Privacy Notice | BeAccessible</title>
   <style>
-    :root { --blue:#1F3F6B; --link:#174A82; --pale:#F0F5FB; --white:#FFFFFF; --ink:#0F1F35; --border:#B7C8DE; --focus:#FFB300; }
+    :root { --blue:#1F3F6B; --link:#174A82; --pale:#F0F5FB; --white:#FFFFFF; --ink:#0F1F35; --border:#B7C8DE; --focus-inner:#FFFFFF; --focus-outer:#0F1F35; }
     * { box-sizing:border-box; }
     body { margin:0; color:var(--ink); background:var(--pale); font:1rem/1.65 Arial,Helvetica,sans-serif; }
     a { color:var(--link); }
-    :focus-visible { outline:4px solid var(--focus); outline-offset:3px; }
+    :focus-visible { outline:3px solid var(--focus-inner); outline-offset:2px; box-shadow:0 0 0 8px var(--focus-outer); }
+    .skip-link { position:absolute; top:-6rem; left:1rem; padding:.75rem; color:var(--blue); background:var(--white); font-weight:700; }
+    .skip-link:focus { top:1rem; }
     header { color:var(--white); background:var(--blue); }
     header div, main, footer { width:min(100% - 2rem, 56rem); margin-inline:auto; }
     header div { padding:1.5rem 0; }
@@ -22,6 +24,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header><div><h1>TrustOS Privacy Notice</h1><p>Phase 1 consolidation demonstration</p></div></header>
   <main id="main-content">
     <p><a href="trustos.html">Return to TrustOS</a></p>
@@ -34,13 +37,22 @@
     <p>Information entered during a session is used only by the prototype behaviour in the browser. The GrantFlow pilot submission is simulated and is not sent as a real application. Refreshing or resetting a module may remove the session data.</p>
 
     <h2>Technical records</h2>
-    <p>The website hosting provider may process ordinary technical records, such as an IP address, browser details, requested pages, timestamps, and security logs. The main BeAccessible privacy notice applies to contact made outside this demonstration.</p>
+    <p>This demonstration is hosted on Vercel. Vercel may process ordinary technical records, such as an IP address, browser details, requested pages, timestamps, and security logs, to deliver and protect the website.</p>
+
+    <h2>Retention and processing location</h2>
+    <p>BeAccessible has not added application-level storage to this demonstration. Technical records may be retained under Vercel's platform configuration and service terms, and processing may occur outside South Africa. An exact technical-log retention period and any required cross-border safeguards have not yet been established for production; qualified privacy review remains pending.</p>
+
+    <h2>Responsible party and your choices</h2>
+    <p>BeAccessible is the responsible party for this demonstration. You may ask whether BeAccessible holds information about you, request correction or deletion where applicable, or raise a privacy concern by emailing <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>. You may also lodge a complaint with South Africa's <a href="https://inforegulator.org.za/">Information Regulator</a>.</p>
+
+    <h2>Main privacy notice</h2>
+    <p>The <a href="https://www.beaccessible.co.za/privacy.html">main BeAccessible privacy notice</a> applies to contact made outside this demonstration.</p>
 
     <h2>Before production use</h2>
     <p>A production release will require documented lawful purpose, data minimisation, retention and deletion rules, access controls, security safeguards, data-subject request procedures, service-provider terms, and any required cross-border processing controls. These controls are not represented as complete in Phase 1.</p>
 
     <h2>Contact</h2>
-    <p>For privacy questions, email <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>.</p>
+    <p>For privacy questions, email <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>. BeAccessible is based in Cape Town, South Africa.</p>
     <p><strong>Last reviewed:</strong> 20 August 2026</p>
   </main>
   <footer><p>BeAccessible · Cape Town, South Africa · <a href="trustos-accessibility.html">Accessibility statement</a></p></footer>

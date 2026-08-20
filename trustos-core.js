@@ -26,5 +26,38 @@
     return modules.length && modules[0] ? modules[0].id : null;
   }
 
-  return { resolveEnabledModules, resolveInitialModuleId };
+  function validateModuleCatalogue(catalogue) {
+    const requiredTextFields = [
+      'id', 'name', 'shortName', 'description', 'source', 'frameTitle'
+    ];
+    const seenIds = new Set();
+    const modules = [];
+    let invalidCount = 0;
+
+    (Array.isArray(catalogue) ? catalogue : []).forEach((moduleDefinition) => {
+      const hasRequiredText = moduleDefinition && requiredTextFields.every((field) =>
+        typeof moduleDefinition[field] === 'string' && moduleDefinition[field].trim()
+      );
+      const hasValidEmbeddedSource = !moduleDefinition ||
+        moduleDefinition.embeddedSource === undefined ||
+        (typeof moduleDefinition.embeddedSource === 'string' && moduleDefinition.embeddedSource.trim());
+      const isUnique = hasRequiredText && !seenIds.has(moduleDefinition.id);
+
+      if (!hasRequiredText || !hasValidEmbeddedSource || !isUnique) {
+        invalidCount += 1;
+        return;
+      }
+
+      seenIds.add(moduleDefinition.id);
+      modules.push(moduleDefinition);
+    });
+
+    return {
+      isValid: Array.isArray(catalogue) && invalidCount === 0,
+      modules,
+      invalidCount
+    };
+  }
+
+  return { resolveEnabledModules, resolveInitialModuleId, validateModuleCatalogue };
 });

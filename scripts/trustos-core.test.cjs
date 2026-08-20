@@ -31,3 +31,22 @@ test('the requested opening module falls back to the first licensed module', () 
   assert.equal(core.resolveInitialModuleId(enabledModules, 'unknown'), 'trustops');
   assert.equal(core.resolveInitialModuleId([], 'trustops'), null);
 });
+
+test('the module catalogue validator rejects malformed and duplicate records', () => {
+  assert.equal(typeof core.validateModuleCatalogue, 'function');
+
+  const result = core.validateModuleCatalogue([
+    {
+      id: 'trustops', name: 'TrustOps Core', shortName: 'TrustOps',
+      description: 'Trust operations', source: 'trustops.html',
+      frameTitle: 'TrustOps demonstration'
+    },
+    { id: 'trustops', name: 'Duplicate' },
+    null
+  ]);
+
+  assert.equal(result.isValid, false);
+  assert.equal(result.modules.length, 1);
+  assert.equal(result.modules[0].id, 'trustops');
+  assert.equal(result.invalidCount, 2);
+});

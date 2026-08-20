@@ -6,11 +6,11 @@
   <meta name="description" content="Accessibility statement for the Phase 1 TrustOS consolidation demonstration.">
   <title>TrustOS Accessibility Statement | BeAccessible</title>
   <style>
-    :root { --blue:#1F3F6B; --link:#174A82; --pale:#F0F5FB; --white:#FFFFFF; --ink:#0F1F35; --border:#B7C8DE; --focus:#FFB300; }
+    :root { --blue:#1F3F6B; --link:#174A82; --pale:#F0F5FB; --white:#FFFFFF; --ink:#0F1F35; --border:#B7C8DE; --focus-inner:#FFFFFF; --focus-outer:#0F1F35; }
     * { box-sizing:border-box; }
     body { margin:0; color:var(--ink); background:var(--pale); font:1rem/1.65 Arial,Helvetica,sans-serif; }
     a { color:var(--link); }
-    :focus-visible { outline:4px solid var(--focus); outline-offset:3px; }
+    :focus-visible { outline:3px solid var(--focus-inner); outline-offset:2px; box-shadow:0 0 0 8px var(--focus-outer); }
     .skip-link { position:absolute; top:-6rem; left:1rem; padding:.75rem; color:var(--blue); background:var(--white); font-weight:700; }
     .skip-link:focus { top:1rem; }
     header { color:var(--white); background:var(--blue); }
@@ -52,7 +52,7 @@
     <p>If you encounter a barrier, email <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a>. Please include the page or module, what you were trying to do, and the assistive technology or browser used if you are comfortable sharing it.</p>
 
     <h2>Assessment approach</h2>
-    <p>Phase 1 uses automated structural checks and keyboard-oriented regression checks. A production release requires manual keyboard review, screen-reader testing, zoom and reflow testing, and disabled-user evaluation.</p>
+    <p>Phase 1 uses automated source and integration checks. A production release requires manual keyboard review, screen-reader testing, zoom and reflow testing, and disabled-user evaluation.</p>
     <p><strong>Last reviewed:</strong> 20 August 2026</p>
   </main>
   <footer><p>BeAccessible · Cape Town, South Africa · <a href="trustos-privacy.html">Privacy notice</a></p></footer>
