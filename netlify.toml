@@ -2,6 +2,13 @@
   command = "python3 scripts/apply_phase2_homepage.py"
   publish = "."
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Phase 3 branch redeploy trigger: refresh Deploy Preview after restoring sandbox Merchant ID context.
+# Second refresh after confirmed Merchant ID creation in Netlify UI.
+
 [[headers]]
   for = "/*"
   [headers.values]
