@@ -35,6 +35,8 @@ Configure these for the isolated preview project. Never commit secret values.
 
 `NEXT_PUBLIC_SUPABASE_URL` must point to the dedicated TrustOS Supabase project. `TRUSTOS_APP_ORIGIN` must be the stable HTTPS origin used by the isolated preview project.
 
+For the code-compatible variable `SUPABASE_SERVICE_ROLE_KEY`, use the dedicated TrustOS project's modern server Secret key (`sb_secret_...`) where available. The variable name is retained for application compatibility; do not place this value in browser-visible configuration or commit it to GitHub.
+
 ## Supabase Auth redirect allowlist
 
 After the Vercel origin is known, allow the following callback in the dedicated TrustOS Supabase project only:
