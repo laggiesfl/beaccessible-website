@@ -1,4 +1,8 @@
-import { RECOVERY_CONFIRMATION, safeNextPath } from '@/lib/actions/auth';
+import {
+  RECOVERY_CONFIRMATION,
+  safeAuthCallbackPath,
+  safeNextPath,
+} from '@/lib/actions/auth';
 
 test.each([
   [undefined, '/app'],
@@ -10,6 +14,20 @@ test.each([
   ['/app/modules/trustops', '/app/modules/trustops'],
 ] as const)('normalizes sign-in destination %s to %s', (value, expected) => {
   expect(safeNextPath(value)).toBe(expected);
+});
+
+test.each([
+  [undefined, '/app'],
+  ['', '/app'],
+  ['https://example.com/reset-password', '/app'],
+  ['//example.com/reset-password', '/app'],
+  ['/sign-in', '/app'],
+  ['/accept-invitation', '/accept-invitation'],
+  ['/reset-password', '/reset-password'],
+  ['/app', '/app'],
+  ['/app/modules/trustops', '/app'],
+] as const)('normalizes auth callback destination %s to %s', (value, expected) => {
+  expect(safeAuthCallbackPath(value)).toBe(expected);
 });
 
 test('recovery confirmation does not disclose whether an account exists', () => {
