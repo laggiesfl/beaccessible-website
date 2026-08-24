@@ -61,3 +61,5 @@ jobs:
 
       - name: Build production application
         run: npm run build
+
+      # This branch-only comment deliberately triggers a PR verification run after the workflow was added to main.
