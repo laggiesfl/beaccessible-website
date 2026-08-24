@@ -1,7 +1,45 @@
 create extension if not exists citext with schema extensions;
 
+do $$
+declare
+  unexpected_tables text;
+begin
+  select string_agg(format('%I.%I', schemaname, tablename), ', ' order by tablename)
+    into unexpected_tables
+  from pg_catalog.pg_tables
+  where schemaname = 'public';
+
+  if unexpected_tables is not null then
+    raise exception
+      'TrustOS project boundary check failed: the target database already contains public application tables: %. Refusing to install TrustOS into a non-empty/shared Supabase project.',
+      unexpected_tables;
+  end if;
+end
+$$;
+
+alter default privileges for role postgres in schema public
+  revoke select, insert, update, delete on tables from anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  revoke execute on functions from anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  revoke usage, select on sequences from anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  revoke execute on functions from public;
+
 create schema private;
-revoke all on schema private from public;
+revoke all on schema private from public, anon, authenticated;
+
+create table private.instance_identity (
+  singleton boolean primary key default true check (singleton),
+  product text not null check (product = 'trustos'),
+  supabase_project_ref text not null check (supabase_project_ref = 'napjcycxzyrsruiifuca'),
+  created_at timestamptz not null default now()
+);
+
+insert into private.instance_identity (singleton, product, supabase_project_ref)
+values (true, 'trustos', 'napjcycxzyrsruiifuca');
+
+revoke all on table private.instance_identity from public, anon, authenticated;
 
 create type public.organization_status as enum ('active', 'suspended');
 create type public.organization_role as enum ('client_admin', 'team_member');
