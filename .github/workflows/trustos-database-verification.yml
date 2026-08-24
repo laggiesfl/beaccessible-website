@@ -4,6 +4,12 @@ name: TrustOS database verification
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "supabase/**"
+      - ".github/workflows/trustos-database-verification.yml"
   push:
     branches:
       - phase2/identity-access-design
