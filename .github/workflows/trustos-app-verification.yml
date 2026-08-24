@@ -1,0 +1,63 @@
+name: TrustOS application verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "trustos-app/**"
+      - ".github/workflows/trustos-app-verification.yml"
+  push:
+    branches:
+      - phase2/identity-access-design
+    paths:
+      - "trustos-app/**"
+      - ".github/workflows/trustos-app-verification.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trustos-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-app:
+    name: Unit tests, typecheck and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: trustos-app
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://napjcycxzyrsruiifuca.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-key-12345678901234567890
+      SUPABASE_SERVICE_ROLE_KEY: ci-service-role-key-12345678901234567890
+      CRON_SECRET: ci-cron-secret-123456789012345678901234567890
+      RATE_LIMIT_HMAC_KEY: ci-rate-limit-key-123456789012345678901234567890
+      TRUSTOS_APP_ORIGIN: https://trustos-phase2-preview.invalid
+      VERCEL_ENV: preview
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: trustos-app/package-lock.json
+
+      - name: Install pinned dependencies
+        run: npm ci
+
+      - name: Run TrustOS unit tests
+        run: npm test
+
+      - name: Run TypeScript checks
+        run: npm run typecheck
+
+      - name: Build production application
+        run: npm run build
