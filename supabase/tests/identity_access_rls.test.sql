@@ -1,6 +1,6 @@
 begin;
 
-select plan(29);
+select plan(31);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.organizations'::regclass),
@@ -190,6 +190,32 @@ select results_eq(
     select count(*) from changed$$,
   $$values (0::bigint)$$,
   'a client administrator cannot update another organisation role assignment'
+);
+select lives_ok(
+  $$insert into public.module_role_assignments (
+      organization_id,
+      user_id,
+      module_id,
+      role,
+      assigned_by
+    ) values (
+      'aaaaaaaa-0000-0000-0000-000000000001',
+      '10000000-0000-0000-0000-000000000003',
+      'trustops',
+      'contributor',
+      '10000000-0000-0000-0000-000000000001'
+    )$$,
+  'a client administrator can assign a licensed role to an active team member in their own organisation'
+);
+select results_eq(
+  $$select count(*)
+    from public.module_role_assignments
+    where organization_id = 'aaaaaaaa-0000-0000-0000-000000000001'
+      and user_id = '10000000-0000-0000-0000-000000000003'
+      and module_id = 'trustops'
+      and role = 'contributor'$$,
+  $$values (1::bigint)$$,
+  'the permitted team-member role assignment is visible to the client administrator'
 );
 
 reset role;
