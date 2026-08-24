@@ -1,0 +1,48 @@
+name: TrustOS database verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - phase2/identity-access-design
+    paths:
+      - "supabase/**"
+      - ".github/workflows/trustos-database-verification.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trustos-database-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-database:
+    name: Reset, pgTAP and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.115.0
+
+      - name: Start local Supabase
+        run: supabase start
+
+      - name: Reset database from migrations
+        run: supabase db reset
+
+      - name: Run TrustOS schema tests
+        run: supabase test db supabase/tests/identity_access_schema.test.sql
+
+      - name: Lint database
+        run: supabase db lint --local --level warning --fail-on warning
+
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop --no-backup

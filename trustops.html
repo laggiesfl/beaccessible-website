@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BeAccessible TrustOps - Inclusive ERP system for development trusts. WCAG 2.2 Level AAA accessible.">
+<meta name="description" content="BeAccessible TrustOps demonstration for development trusts, designed toward WCAG 2.2 Level AA.">
 <title>BeAccessible TrustOps - Inclusive ERP for Development Trusts</title>
+<script id="trustos-layout-mode">
+  if (new URLSearchParams(location.search).get('embedded') === '1') {
+    document.documentElement.classList.add('trustos-embedded');
+  }
+</script>
 <style>
   /* ============= BeAccessible Brand Variables (WCAG AAA contrast) ============= */
   :root {
@@ -24,7 +29,8 @@
     --be-warning-bg: #FCEBC9;
     --be-danger-bg: #F8D7D7;
     --be-border: #C9D6E8;
-    --be-focus-ring: #FFB300;       /* High-visibility focus */
+    --focus-inner: #FFFFFF;          /* Light boundary on dark surfaces */
+    --focus-outer: #0F1F35;          /* Dark boundary on light surfaces */
     --shadow-sm: 0 1px 3px rgba(31, 63, 107, 0.08);
     --shadow-md: 0 4px 12px rgba(31, 63, 107, 0.12);
     --radius: 8px;
@@ -69,8 +75,9 @@
 
   /* ============= Focus styles (WCAG 2.4.7 + 2.4.13) ============= */
   *:focus-visible {
-    outline: 4px solid var(--be-focus-ring);
+    outline: 3px solid var(--focus-inner);
     outline-offset: 2px;
+    box-shadow: 0 0 0 8px var(--focus-outer);
     border-radius: 4px;
   }
 
@@ -362,6 +369,42 @@
   }
   .demo-hint strong { color: var(--be-deep-blue); display: block; margin-bottom: 0.2rem; }
 
+  /* Compact presentation when TrustOps runs inside the TrustOS workspace. */
+  .trustos-embedded .login-screen {
+    min-height: auto;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: var(--be-tint-3);
+  }
+  .trustos-embedded .login-card {
+    max-width: 420px;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border: 1px solid var(--be-border);
+    box-shadow: var(--shadow-sm);
+  }
+  .trustos-embedded .login-logo {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 0.65rem;
+  }
+  .trustos-embedded .login-card h1 {
+    font-size: 1.35rem;
+  }
+  .trustos-embedded .login-card .tagline {
+    margin-bottom: 1rem;
+  }
+  .trustos-embedded .demo-hint {
+    padding: 0.65rem 0.8rem;
+    margin-bottom: 0.9rem;
+  }
+  .trustos-embedded .field {
+    margin-bottom: 0.85rem;
+  }
+  .trustos-embedded .login-card .btn {
+    padding: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
   /* ============= Progress bars (impact dashboard) ============= */
   .progress-row {
     background: var(--be-white);
@@ -507,22 +550,22 @@
     <p class="tagline">Inclusive ERP for Development Trusts</p>
 
     <div class="demo-hint" role="note">
-      <strong>Demo Mode</strong>
-      Enter any email and password to explore the SIOC-CDT pilot trust.
+      <strong>Demo sign-in</strong>
+      Enter any email and password to explore sample data. This screen does not provide real authentication.
     </div>
 
     <form id="login-form" novalidate>
       <div class="field">
         <label for="email">Email address</label>
         <input type="email" id="email" name="email" autocomplete="email" required value="kabelo.letsoalo@sioc-cdt.example">
-        <p class="help-text" id="email-help">We use email to authenticate your trust account.</p>
+        <p class="help-text" id="email-help">Demo credentials remain in this browser and are ignored after sign-in.</p>
       </div>
       <div class="field">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" autocomplete="current-password" required value="DemoMode123">
         <p class="help-text">Demo password is pre-filled.</p>
       </div>
-      <button type="submit" class="btn">Sign in to TrustOps</button>
+      <button type="button" id="demo-sign-in-button" class="btn">Sign in to TrustOps</button>
     </form>
   </div>
 </div>
@@ -936,7 +979,7 @@
   <footer role="contentinfo">
     <p>BeAccessible TrustOps · Inclusive ERP for Development Trusts</p>
     <p style="margin-top: 0.5rem; font-size: 0.9rem;">
-      WCAG 2.2 Level AAA · POPIA-aligned · Built in Cape Town, South Africa<br>
+      Designed toward WCAG 2.2 Level AA · Independent accessibility and POPIA review required before production · Built in Cape Town, South Africa<br>
       <a href="mailto:hello@beaccessible.co.za">hello@beaccessible.co.za</a> · beaccessible.co.za
     </p>
   </footer>
@@ -944,11 +987,24 @@
 
 <script>
   // Login flow
-  document.getElementById('login-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+  function openDemo() {
     document.getElementById('login-screen').hidden = true;
     document.getElementById('app').hidden = false;
     document.getElementById('main-content').focus();
+  }
+
+  document.getElementById('demo-sign-in-button').addEventListener('click', openDemo);
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    openDemo();
+  });
+
+  document.getElementById('login-form').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+      e.preventDefault();
+      openDemo();
+    }
   });
 
   // Logout
