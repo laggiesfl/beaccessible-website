@@ -8,6 +8,14 @@ const publicEnv = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-key-1234567890',
 };
 
+const serverEnv = {
+  ...publicEnv,
+  SUPABASE_SERVICE_ROLE_KEY: 'server-only-secret-1234567890',
+  CRON_SECRET: 'cron-secret-12345678901234567890',
+  RATE_LIMIT_HMAC_KEY: 'rate-limit-key-12345678901234567',
+  TRUSTOS_APP_ORIGIN: 'https://trustos.example.test',
+};
+
 test('rejects missing public Supabase configuration', () => {
   expect(() => getPublicEnv({})).toThrow('NEXT_PUBLIC_SUPABASE_URL');
 });
@@ -27,8 +35,23 @@ test('requires the service role only through server configuration', () => {
       ...publicEnv,
       CRON_SECRET: 'cron-secret-12345678901234567890',
       RATE_LIMIT_HMAC_KEY: 'rate-limit-key-12345678901234567',
+      TRUSTOS_APP_ORIGIN: 'https://trustos.example.test',
     }),
   ).toThrow('SUPABASE_SERVICE_ROLE_KEY');
+});
+
+test('requires a pinned TrustOS application origin on the server', () => {
+  const { TRUSTOS_APP_ORIGIN, ...withoutOrigin } = serverEnv;
+  expect(() => getServerEnv(withoutOrigin)).toThrow('TRUSTOS_APP_ORIGIN');
+});
+
+test('rejects a TrustOS application origin with a path', () => {
+  expect(() =>
+    getServerEnv({
+      ...serverEnv,
+      TRUSTOS_APP_ORIGIN: 'https://trustos.example.test/other-product',
+    }),
+  ).toThrow('TRUSTOS_APP_ORIGIN');
 });
 
 test('rejects the shared BeAccessible Supabase project', () => {
