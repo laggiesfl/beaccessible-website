@@ -46,11 +46,22 @@ function enforceTrustOSProjectBoundary(
 
 const publicSchema = basePublicSchema.superRefine(enforceTrustOSProjectBoundary);
 
+const appOriginSchema = z.string().url().superRefine((value, context) => {
+  const url = new URL(value);
+  if (url.protocol !== 'https:' || url.pathname !== '/' || url.search || url.hash) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'TRUSTOS_APP_ORIGIN must be an HTTPS origin with no path, query or fragment.',
+    });
+  }
+});
+
 const serverSchema = basePublicSchema
   .extend({
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
     CRON_SECRET: z.string().min(32),
     RATE_LIMIT_HMAC_KEY: z.string().min(32),
+    TRUSTOS_APP_ORIGIN: appOriginSchema,
   })
   .superRefine(enforceTrustOSProjectBoundary);
 
@@ -85,6 +96,7 @@ export function getServerEnv(environment: Environment = process.env) {
     SUPABASE_SERVICE_ROLE_KEY,
     CRON_SECRET,
     RATE_LIMIT_HMAC_KEY,
+    TRUSTOS_APP_ORIGIN,
   } = parsed;
 
   return {
@@ -93,5 +105,6 @@ export function getServerEnv(environment: Environment = process.env) {
     SUPABASE_SERVICE_ROLE_KEY,
     CRON_SECRET,
     RATE_LIMIT_HMAC_KEY,
+    TRUSTOS_APP_ORIGIN,
   };
 }
