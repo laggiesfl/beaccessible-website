@@ -1,5 +1,7 @@
 name: TrustOS database verification
 
+# Runs in a disposable GitHub-hosted Docker environment.
+
 on:
   workflow_dispatch:
   push:
