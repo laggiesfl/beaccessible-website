@@ -38,22 +38,31 @@ function invitationErrorLocation(invitationId: string, code: string): string {
 export async function getInvitationPreview(
   invitationIdInput: string | undefined,
 ): Promise<InvitationPreview | null> {
-  const parsedId = invitationIdSchema.safeParse(invitationIdInput);
-  if (!parsedId.success) return null;
-
   const userClient = await createServerClient();
   const { data: userData, error: userError } = await userClient.auth.getUser();
   const verifiedUser = userData.user;
   if (userError || !verifiedUser?.email) return null;
 
   const admin = createAdminClient();
-  const { data: invitation, error: invitationError } = await admin
+  const parsedId = invitationIdSchema.safeParse(invitationIdInput);
+  let invitationQuery = admin
     .from('invitations')
-    .select('id,organization_id,email_normalized,organization_role,status,expires_at')
-    .eq('id', parsedId.data)
-    .maybeSingle();
+    .select('id,organization_id,email_normalized,organization_role,status,expires_at,created_at');
 
-  if (invitationError || !invitation) return null;
+  if (parsedId.success) {
+    invitationQuery = invitationQuery.eq('id', parsedId.data);
+  } else {
+    invitationQuery = invitationQuery
+      .eq('email_normalized', verifiedUser.email.trim().toLowerCase())
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(2);
+  }
+
+  const { data: invitationRows, error: invitationError } = await invitationQuery;
+  if (invitationError || !invitationRows || invitationRows.length !== 1) return null;
+  const invitation = invitationRows[0];
+
   if (invitation.status !== 'pending') return null;
   if (new Date(invitation.expires_at).getTime() <= Date.now()) return null;
   if (String(invitation.email_normalized).trim().toLowerCase() !== verifiedUser.email.trim().toLowerCase()) {
@@ -107,6 +116,15 @@ export async function getInvitationPreview(
   };
 }
 
+async function revokeAllSessions(
+  userClient: Awaited<ReturnType<typeof createServerClient>>,
+  admin: ReturnType<typeof createAdminClient>,
+  userId: string,
+) {
+  await userClient.auth.signOut({ scope: 'global' });
+  await admin.rpc('revoke_trustos_user_sessions', { target_user: userId });
+}
+
 export async function acceptInvitationAction(formData: FormData) {
   'use server';
 
@@ -152,9 +170,44 @@ export async function acceptInvitationAction(formData: FormData) {
   });
 
   if (acceptanceError) {
-    await userClient.auth.signOut({ scope: 'global' });
-    await admin.rpc('revoke_trustos_user_sessions', { target_user: verifiedUser.id });
+    await revokeAllSessions(userClient, admin, verifiedUser.id);
     redirect('/sign-in?error=invitation');
+  }
+
+  const { data: platformStatus, error: platformStatusError } = await admin.rpc(
+    'trustos_platform_admin_status',
+    { target_user: verifiedUser.id },
+  );
+
+  if (platformStatusError) {
+    await revokeAllSessions(userClient, admin, verifiedUser.id);
+    redirect('/sign-in?error=platform-activation');
+  }
+
+  if (platformStatus === 'pending') {
+    const previousAppMetadata = verifiedUser.app_metadata ?? {};
+    const { error: metadataError } = await admin.auth.admin.updateUserById(verifiedUser.id, {
+      app_metadata: { ...previousAppMetadata, platform_role: 'platform_admin' },
+    });
+    if (metadataError) {
+      await revokeAllSessions(userClient, admin, verifiedUser.id);
+      redirect('/sign-in?error=platform-activation');
+    }
+
+    const { data: activated, error: activationError } = await admin.rpc(
+      'activate_trustos_platform_admin',
+      { target_user: verifiedUser.id },
+    );
+    if (activationError || activated !== true) {
+      await admin.auth.admin.updateUserById(verifiedUser.id, {
+        app_metadata: previousAppMetadata,
+      });
+      await revokeAllSessions(userClient, admin, verifiedUser.id);
+      redirect('/sign-in?error=platform-activation');
+    }
+
+    await revokeAllSessions(userClient, admin, verifiedUser.id);
+    redirect('/sign-in?platform=activated');
   }
 
   redirect('/app');
