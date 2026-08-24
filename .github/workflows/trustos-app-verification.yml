@@ -36,6 +36,7 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ci-service-role-key-12345678901234567890
       CRON_SECRET: ci-cron-secret-123456789012345678901234567890
       RATE_LIMIT_HMAC_KEY: ci-rate-limit-key-123456789012345678901234567890
+      TRUSTOS_APP_ORIGIN: https://trustos-phase2-preview.invalid
       VERCEL_ENV: preview
 
     steps:
