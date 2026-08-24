@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { recordAuditEvent } from '@/lib/audit/events';
+import { getServerEnv } from '@/lib/env';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createServerClient } from '@/lib/supabase/server';
 
@@ -43,6 +44,26 @@ export function safeNextPath(value?: string | null): string {
       return '/app';
     }
     return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return '/app';
+  }
+}
+
+export function safeAuthCallbackPath(value?: string | null): string {
+  if (!value || !value.startsWith('/') || value.startsWith('//')) {
+    return '/app';
+  }
+
+  try {
+    const parsed = new URL(value, 'https://trustos.invalid');
+    if (parsed.origin !== 'https://trustos.invalid') {
+      return '/app';
+    }
+
+    const allowed = new Set(['/accept-invitation', '/reset-password', '/app']);
+    return allowed.has(parsed.pathname) && !parsed.search && !parsed.hash
+      ? parsed.pathname
+      : '/app';
   } catch {
     return '/app';
   }
@@ -109,7 +130,11 @@ export async function requestRecoveryAction(formData: FormData) {
   const supabase = await createServerClient();
 
   if (parsed.success) {
-    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email);
+    const { TRUSTOS_APP_ORIGIN } = getServerEnv();
+    const redirectTo = `${TRUSTOS_APP_ORIGIN}/api/auth/callback?next=/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+      redirectTo,
+    });
     await recordAuditEvent({
       eventType: 'password_recovery_requested',
       outcome: error ? 'failed' : 'succeeded',
@@ -140,14 +165,11 @@ export async function resetPasswordAction(formData: FormData) {
     redirect('/reset-password?error=invalid');
   }
 
-  await recordAuditEvent({
-    actorUserId: userData.user.id,
-    eventType: 'password_changed',
-    outcome: 'succeeded',
-    metadata: { source: 'password_reset' },
-  });
+  const { error: signOutError } = await supabase.auth.signOut({ scope: 'global' });
+  if (signOutError) {
+    throw new Error('TrustOS could not complete global sign-out');
+  }
 
-  await supabase.auth.signOut({ scope: 'global' });
   const admin = createAdminClient();
   const { error: revokeError } = await admin.rpc('revoke_trustos_user_sessions', {
     target_user: userData.user.id,
@@ -155,6 +177,13 @@ export async function resetPasswordAction(formData: FormData) {
   if (revokeError) {
     throw new Error('TrustOS could not complete session revocation');
   }
+
+  await recordAuditEvent({
+    actorUserId: userData.user.id,
+    eventType: 'password_changed',
+    outcome: 'succeeded',
+    metadata: { source: 'password_reset' },
+  });
 
   redirect('/sign-in?changed=1');
 }
@@ -174,7 +203,10 @@ export async function signOutAction() {
     });
   }
 
-  await supabase.auth.signOut({ scope: 'global' });
+  const { error: signOutError } = await supabase.auth.signOut({ scope: 'global' });
+  if (signOutError) {
+    throw new Error('TrustOS could not complete global sign-out');
+  }
 
   if (data.user) {
     const admin = createAdminClient();
