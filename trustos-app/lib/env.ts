@@ -4,15 +4,23 @@ export const TRUSTOS_SUPABASE_PROJECT_REF = 'napjcycxzyrsruiifuca';
 const TRUSTOS_SUPABASE_HOST = `${TRUSTOS_SUPABASE_PROJECT_REF}.supabase.co`;
 const LOCAL_SUPABASE_HOSTS = new Set(['127.0.0.1', 'localhost']);
 
-const publicSchema = z.object({
+const basePublicSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(20),
   NODE_ENV: z.enum(['development', 'test', 'production']).optional(),
   VERCEL_ENV: z.enum(['development', 'preview', 'production']).optional(),
-}).superRefine((value, context) => {
+});
+
+type PublicConfiguration = z.infer<typeof basePublicSchema>;
+
+function enforceTrustOSProjectBoundary(
+  value: PublicConfiguration,
+  context: z.RefinementCtx,
+) {
   const url = new URL(value.NEXT_PUBLIC_SUPABASE_URL);
   const isLocal = LOCAL_SUPABASE_HOSTS.has(url.hostname);
-  const isHostedTrustOS = url.protocol === 'https:' && url.hostname === TRUSTOS_SUPABASE_HOST;
+  const isHostedTrustOS =
+    url.protocol === 'https:' && url.hostname === TRUSTOS_SUPABASE_HOST;
   const isProductionLike =
     value.NODE_ENV === 'production' ||
     value.VERCEL_ENV === 'production' ||
@@ -34,13 +42,17 @@ const publicSchema = z.object({
       message: `TrustOS must use the dedicated TrustOS Supabase project (${TRUSTOS_SUPABASE_PROJECT_REF}) or a local Supabase instance during development.`,
     });
   }
-});
+}
 
-const serverSchema = publicSchema.extend({
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
-  CRON_SECRET: z.string().min(32),
-  RATE_LIMIT_HMAC_KEY: z.string().min(32),
-});
+const publicSchema = basePublicSchema.superRefine(enforceTrustOSProjectBoundary);
+
+const serverSchema = basePublicSchema
+  .extend({
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
+    CRON_SECRET: z.string().min(32),
+    RATE_LIMIT_HMAC_KEY: z.string().min(32),
+  })
+  .superRefine(enforceTrustOSProjectBoundary);
 
 type Environment = Record<string, string | undefined>;
 
