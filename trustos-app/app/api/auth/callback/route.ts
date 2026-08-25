@@ -9,13 +9,16 @@ const invitationIdSchema = z.string().uuid();
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
+  const tokenHash = request.nextUrl.searchParams.get('token_hash');
+  const tokenType = request.nextUrl.searchParams.get('type');
   const next = safeAuthCallbackPath(request.nextUrl.searchParams.get('next'));
   const invitationId = invitationIdSchema.safeParse(
     request.nextUrl.searchParams.get('invitation'),
   );
   const { TRUSTOS_APP_ORIGIN } = getServerEnv();
 
-  if (!code) {
+  const hasInviteToken = Boolean(tokenHash) && tokenType === 'invite';
+  if (!code && !hasInviteToken) {
     return NextResponse.redirect(
       new URL('/sign-in?error=session', TRUSTOS_APP_ORIGIN),
       303,
@@ -24,7 +27,12 @@ export async function GET(request: NextRequest) {
 
   const responseHeaders = new Headers();
   const supabase = await createServerClient({ responseHeaders });
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { error } = code
+    ? await supabase.auth.exchangeCodeForSession(code)
+    : await supabase.auth.verifyOtp({
+        token_hash: tokenHash as string,
+        type: 'invite',
+      });
 
   if (error) {
     return NextResponse.redirect(
