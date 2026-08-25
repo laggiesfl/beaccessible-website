@@ -54,7 +54,10 @@ vi.mock('@supabase/ssr', () => ({
 }));
 
 beforeEach(() => {
-  vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+  vi.stubEnv(
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'https://napjcycxzyrsruiifuca.supabase.co',
+  );
   vi.stubEnv(
     'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
     'public-key-1234567890',
