@@ -4,7 +4,10 @@ const accessToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTE1MTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImV4cCI6NDA3MDkwODgwMH0.signature';
 
 beforeEach(() => {
-  vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+  vi.stubEnv(
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'https://napjcycxzyrsruiifuca.supabase.co',
+  );
   vi.stubEnv(
     'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
     'public-key-1234567890',
