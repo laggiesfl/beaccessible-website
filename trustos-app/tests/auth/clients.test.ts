@@ -100,11 +100,12 @@ import { createBrowserClient } from '@/lib/supabase/browser';
 import { createServerClient } from '@/lib/supabase/server';
 
 const environment = {
-  NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
+  NEXT_PUBLIC_SUPABASE_URL: 'https://napjcycxzyrsruiifuca.supabase.co',
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-key-1234567890',
   SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-1234567890',
   CRON_SECRET: 'cron-secret-12345678901234567890',
   RATE_LIMIT_HMAC_KEY: 'rate-limit-key-12345678901234567',
+  TRUSTOS_APP_ORIGIN: 'https://trustos-phase-2-preview.vercel.app',
 };
 
 beforeEach(() => {
