@@ -43,7 +43,8 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+.site-main:focus-visible {
   outline: 3px solid var(--focus-inner);
   outline-offset: 2px;
   box-shadow: 0 0 0 6px var(--focus-outer);
@@ -65,6 +66,10 @@ textarea:focus-visible {
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+.site-main {
+  min-height: 65vh;
 }
 
 .site-header,
@@ -166,6 +171,13 @@ textarea:focus-visible {
   color: var(--deep-blue);
 }
 
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .error-summary,
 .status-message {
   margin-block: 1rem;
@@ -202,6 +214,55 @@ textarea:focus-visible {
   align-items: center;
 }
 
+.workspace-page {
+  display: grid;
+  gap: 2rem;
+}
+
+.workspace-intro {
+  max-width: 48rem;
+}
+
+.eyebrow,
+.module-status {
+  margin: 0 0 0.35rem;
+  color: var(--mid-blue);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.signed-in-as {
+  color: var(--text-mid);
+  font-weight: 700;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.module-card,
+.workspace-admin {
+  padding: 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--tint-3);
+}
+
+.module-card h3,
+.workspace-admin h2 {
+  margin-top: 0.2rem;
+  color: var(--deep-blue);
+}
+
+.workspace-admin {
+  background: var(--white);
+  box-shadow: 0 0.5rem 1.5rem rgb(31 63 107 / 0.06);
+}
+
 @media (max-width: 40rem) {
   .site-header,
   .site-footer,
@@ -211,6 +272,10 @@ textarea:focus-visible {
 
   .account-card {
     padding: 1.1rem;
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
   }
 
   .primary-button,
