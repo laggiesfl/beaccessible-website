@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review AI Cost Audit payment | BeAccessible</title>
+  <meta name="description" content="Review the BeAccessible AI Cost Audit scope, delivery, policies and customer details before continuing to Payfast Sandbox.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html"><span>BeAccessible</span></a>
+      <nav aria-label="Primary"><ul><li><a href="products.html">Products</a></li><li><a href="index.html#contact">Contact</a></li></ul></nav>
+    </div>
+  </header>
+  <main id="main">
+    <div class="page-hero">
+      <div class="container content-narrow">
+        <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / <a href="ai-cost-audit.html">AI Cost Audit</a> / Payment review</div>
+        <h1>Review your AI Cost Audit payment</h1>
+        <p class="lead">Check the scope, delivery timing and policies before continuing to Payfast Sandbox.</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="container checkout-layout">
+        <div class="checkout-summary">
+          <span class="status">Sandbox checkout</span>
+          <h2>BeAccessible AI Cost Audit</h2>
+          <p class="price">R3,500 once-off</p>
+          <p><strong>No real money will be charged in this Phase 3 sandbox preview.</strong></p>
+
+          <h3>Included scope and limits</h3>
+          <ul>
+            <li>Up to 10 AI tools.</li>
+            <li>Up to 3 stakeholder or user interviews where required.</li>
+            <li>Spend, licence, duplication and inactive-subscription review.</li>
+            <li>Accessibility, usability, privacy, security and governance review.</li>
+            <li>Per-tool recommendations, a 30-day plan and a 90-day plan.</li>
+            <li>Human-reviewed accessible DOCX and PDF report.</li>
+          </ul>
+
+          <h3>Information you must provide</h3>
+          <p>Tool names and purposes, costs, available usage evidence, relevant policies or controls, and agreed interview contacts where required. Do not provide passwords or card details.</p>
+
+          <h3>Delivery</h3>
+          <p>Within 5 working days after all required customer information and evidence have been received. The delivery period begins only when those inputs are complete.</p>
+
+          <h3>Refund and cancellation summary</h3>
+          <p>Treatment depends on whether work has started, work completed, reasonable costs and applicable law. Verified duplicate or incorrect charges will be corrected as appropriate.</p>
+        </div>
+
+        <div class="checkout-form-panel">
+          <div id="error-summary" class="error-summary" role="alert" tabindex="-1" hidden></div>
+          <form id="checkout-form" action="/.netlify/functions/start-payment" method="post">
+            <input type="hidden" name="productCode" value="ai-cost-audit">
+            <fieldset>
+              <legend>Your details</legend>
+              <p class="form-instructions">Fields marked “required” must be completed.</p>
+
+              <div class="form-field">
+                <label for="name">Name <span>(required)</span></label>
+                <input id="name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="name-error">
+                <p class="field-error" id="name-error"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="email">Email <span>(required)</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-hint email-error">
+                <p class="field-hint" id="email-hint">We will use this address for payment and intake updates.</p>
+                <p class="field-error" id="email-error"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="organisation">Organisation <span>(optional)</span></label>
+                <input id="organisation" name="organisation" type="text" autocomplete="organization" maxlength="120" aria-describedby="organisation-error">
+                <p class="field-error" id="organisation-error"></p>
+              </div>
+            </fieldset>
+
+            <fieldset class="policy-fieldset">
+              <legend>Policy acceptance</legend>
+              <div class="checkbox-row">
+                <input id="acceptedPolicies" name="acceptedPolicies" type="checkbox" required aria-describedby="acceptedPolicies-error">
+                <label for="acceptedPolicies">I accept the <a href="terms.html">Terms &amp; Conditions</a> and the <a href="refund-cancellation-delivery.html">Refund, Cancellation &amp; Delivery Policy</a>. <span>(required)</span></label>
+              </div>
+              <p class="field-error" id="acceptedPolicies-error"></p>
+            </fieldset>
+
+            <p class="policy-links">Also review the <a href="privacy.html">Privacy Policy</a> and <a href="accessibility.html">Accessibility Statement</a>.</p>
+            <p>Payment-card details are entered only on Payfast. BeAccessible does not collect them.</p>
+
+            <div class="form-actions">
+              <button class="btn" type="submit">Continue to secure payment</button>
+              <a class="secondary-action" href="products.html">Cancel and return to products</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="container footer-grid"><div><a class="brand" href="index.html"><span>BeAccessible</span></a><p>Creating access for all.</p></div><div class="footer-links"><a href="terms.html">Terms &amp; Conditions</a><a href="refund-cancellation-delivery.html">Refund, Cancellation &amp; Delivery Policy</a><a href="privacy.html">Privacy Policy</a><a href="accessibility.html">Accessibility Statement</a></div></div>
+    <div class="container compliance-note"><strong>Accessibility Compliance Note:</strong> Standards Applied — WCAG 2.2 AA minimum, with AAA criteria applied where reasonably achievable. Key Measures — semantic fields, programmatic labels, linked error summary, preserved input, visible focus, large targets, no timing dependency, responsive reflow and low physical effort. Known Limitations — assistive-technology and one-handed user testing must still be completed on the branch deployment.</div>
+  </footer>
+  <script>
+    (() => {
+      const form = document.getElementById('checkout-form');
+      const summary = document.getElementById('error-summary');
+      const fields = ['name', 'email', 'organisation', 'acceptedPolicies'].map((id) => document.getElementById(id));
+      form.noValidate = true;
+
+      const messageFor = (field) => {
+        if (field.id === 'acceptedPolicies' && !field.checked) return 'Accept the purchase and refund policies to continue.';
+        if (field.validity.valueMissing) return field.id === 'name' ? 'Enter your name.' : 'Enter your email address.';
+        if (field.validity.typeMismatch) return 'Enter a valid email address.';
+        if (field.validity.tooLong) return `${field.labels[0].textContent.trim()} must be shorter.`;
+        return '';
+      };
+
+      const clearError = (field) => {
+        field.removeAttribute('aria-invalid');
+        document.getElementById(`${field.id}-error`).textContent = '';
+      };
+
+      fields.forEach((field) => field.addEventListener('input', () => clearError(field)));
+      fields.forEach((field) => field.addEventListener('change', () => clearError(field)));
+
+      form.addEventListener('submit', (event) => {
+        const errors = [];
+        fields.forEach((field) => {
+          clearError(field);
+          const message = messageFor(field);
+          if (message) {
+            errors.push({ field, message });
+            field.setAttribute('aria-invalid', 'true');
+            document.getElementById(`${field.id}-error`).textContent = `Error: ${message}`;
+          }
+        });
+
+        if (!errors.length) return;
+        event.preventDefault();
+        const list = errors.map(({ field, message }) => `<li><a href="#${field.id}">${message}</a></li>`).join('');
+        summary.innerHTML = `<h2>Check the following details</h2><ul>${list}</ul>`;
+        summary.hidden = false;
+        summary.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
