@@ -294,3 +294,103 @@ textarea:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+.admin-page-header {
+  max-width: 52rem;
+}
+
+.admin-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-block: 1.5rem;
+}
+
+.admin-section-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 0.85rem;
+  border: 2px solid var(--deep-blue);
+  border-radius: 0.4rem;
+  background: var(--white);
+  color: var(--deep-blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-section-link[aria-current='page'] {
+  background: var(--deep-blue);
+  color: var(--white);
+}
+
+.admin-section {
+  margin-top: 1.5rem;
+}
+
+.admin-card-wide {
+  width: min(100%, 52rem);
+}
+
+.admin-section fieldset {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+}
+
+.inline-admin-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.form-field select {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 2px solid var(--mid-blue);
+  border-radius: 0.4rem;
+  background: var(--white);
+  color: var(--text-dark);
+  font: inherit;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-scroll caption {
+  padding: 0.8rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+.table-scroll th,
+.table-scroll td {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (max-width: 40rem) {
+  .admin-section-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section-link {
+    width: 100%;
+  }
+}

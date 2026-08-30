@@ -54,8 +54,8 @@ async function requirePlatformAdmin(): Promise<PlatformContext> {
   return { userId: user.id, admin };
 }
 
-function platformResult(code: string): never {
-  redirect(`/app/admin/platform?result=${encodeURIComponent(code)}`);
+function platformResult(code: string, section: string): never {
+  redirect(`/app/admin/platform?section=${encodeURIComponent(section)}&result=${encodeURIComponent(code)}`);
 }
 
 export async function getPlatformAdminView() {
@@ -63,6 +63,7 @@ export async function getPlatformAdminView() {
   const { data: organizations, error: organizationsError } = await admin
     .from('organizations')
     .select('id,name,status,created_at,suspended_at')
+    .neq('name', 'BeAccessible Platform')
     .order('name');
   if (organizationsError) throw new Error('TrustOS could not load organisations');
 
@@ -92,19 +93,35 @@ export async function createOrganizationAction(formData: FormData) {
     trustops: checked(formData, 'trustops'),
     grantflow: checked(formData, 'grantflow'),
   });
-  if (!parsed.success) platformResult('invalid-organization');
+  if (!parsed.success) platformResult('invalid-organization', 'create');
 
   const { userId, admin } = await requirePlatformAdmin();
+  const { data: activeOrganizations, error: lookupError } = await admin
+    .from('organizations')
+    .select('name')
+    .eq('status', 'active');
+  if (lookupError) platformResult('organization-failed', 'create');
+
+  const normalizedName = parsed.data.name.trim().toLocaleLowerCase('en-US');
+  if ((activeOrganizations ?? []).some((organization) =>
+    organization.name.trim().toLocaleLowerCase('en-US') === normalizedName
+  )) {
+    platformResult('organization-exists', 'create');
+  }
+
   const { error } = await admin.rpc('trustos_platform_create_organization', {
     actor_user: userId,
     organization_name: parsed.data.name,
     enable_trustops: parsed.data.trustops,
     enable_grantflow: parsed.data.grantflow,
   });
-  if (error) platformResult('organization-failed');
+  if (error?.message.includes('organization_exists') || error?.code === '23505') {
+    platformResult('organization-exists', 'create');
+  }
+  if (error) platformResult('organization-failed', 'create');
 
   revalidatePath('/app/admin/platform');
-  platformResult('organization-created');
+  platformResult('organization-created', 'organizations');
 }
 
 export async function setOrganizationModuleAction(formData: FormData) {
@@ -113,7 +130,7 @@ export async function setOrganizationModuleAction(formData: FormData) {
   const moduleId = moduleIdSchema.safeParse(formString(formData, 'moduleId'));
   const enabled = formString(formData, 'enabled');
   if (!organizationId.success || !moduleId.success || !['true', 'false'].includes(enabled)) {
-    platformResult('module-invalid');
+    platformResult('module-invalid', 'licensing');
   }
 
   const { userId, admin } = await requirePlatformAdmin();
@@ -123,24 +140,29 @@ export async function setOrganizationModuleAction(formData: FormData) {
     target_module: moduleId.data,
     target_enabled: enabled === 'true',
   });
-  if (error) platformResult('module-failed');
+  if (error) platformResult('module-failed', 'licensing');
 
   revalidatePath('/app/admin/platform');
-  platformResult('module-updated');
+  platformResult('module-updated', 'licensing');
 }
 
 export async function inviteClientAdminAction(formData: FormData) {
   'use server';
   const organizationId = organizationIdSchema.safeParse(formString(formData, 'organizationId'));
   const email = emailSchema.safeParse(formString(formData, 'email'));
-  if (!organizationId.success || !email.success) platformResult('invitation-invalid');
+  if (!organizationId.success || !email.success) platformResult('invitation-invalid', 'invitations');
 
   const { userId, admin } = await requirePlatformAdmin();
   const { data: invitationId, error: invitationError } = await admin.rpc(
     'trustos_platform_create_client_admin_invitation',
     { actor_user: userId, target_org: organizationId.data, target_email: email.data },
   );
-  if (invitationError || typeof invitationId !== 'string') platformResult('invitation-failed');
+  if (invitationError?.message.includes('invitation_already_pending')) {
+    platformResult('invitation-pending', 'invitations');
+  }
+  if (invitationError || typeof invitationId !== 'string') {
+    platformResult('invitation-failed', 'invitations');
+  }
 
   const { TRUSTOS_APP_ORIGIN } = getServerEnv();
   const redirectTo = new URL('/api/auth/callback', TRUSTOS_APP_ORIGIN);
@@ -157,18 +179,18 @@ export async function inviteClientAdminAction(formData: FormData) {
       target_invitation: invitationId,
       cancellation_reason: 'delivery_failed',
     });
-    platformResult('invitation-delivery-failed');
+    platformResult('invitation-delivery-failed', 'invitations');
   }
 
   revalidatePath('/app/admin/platform');
-  platformResult('invitation-sent');
+  platformResult('invitation-sent', 'invitations');
 }
 
 export async function suspendOrganizationAction(formData: FormData) {
   'use server';
   const organizationId = organizationIdSchema.safeParse(formString(formData, 'organizationId'));
   if (!organizationId.success || !checked(formData, 'confirmSuspension')) {
-    platformResult('suspension-not-confirmed');
+    platformResult('suspension-not-confirmed', 'suspension');
   }
 
   const { userId, admin } = await requirePlatformAdmin();
@@ -176,8 +198,8 @@ export async function suspendOrganizationAction(formData: FormData) {
     actor_user: userId,
     target_org: organizationId.data,
   });
-  if (error) platformResult('suspension-failed');
+  if (error) platformResult('suspension-failed', 'suspension');
 
   revalidatePath('/app/admin/platform');
-  platformResult('organization-suspended');
+  platformResult('organization-suspended', 'organizations');
 }
