@@ -8,9 +8,10 @@ import {
   teamRoleLabel,
 } from '@/lib/actions/team-admin';
 import type { ModuleRole } from '@/lib/authz/types';
+import { RoleActionFeedback } from './role-action-feedback';
 
 type TeamAdminPageProps = {
-  searchParams: Promise<{ result?: string; section?: string; member?: string }>;
+  searchParams: Promise<{ result?: string; section?: string; member?: string; module?: string; role?: string }>;
 };
 
 type TeamSection = 'members' | 'invite';
@@ -74,7 +75,14 @@ export default async function TeamAdminPage({ searchParams }: TeamAdminPageProps
     view.members.find((member) => member.userId === params.member) ??
     view.members.find((member) => member.userId === view.currentUserId) ??
     view.members[0];
-  const message = params.result ? RESULT_MESSAGES[params.result] : null;
+  const isRoleResult = params.result === 'role-assigned' || params.result === 'role-revoked';
+  const message = params.result && !isRoleResult ? RESULT_MESSAGES[params.result] : null;
+  const moduleLabel = params.module === 'trustops' ? 'TrustOps' : params.module === 'grantflow' ? 'GrantFlow' : null;
+  const resultRole = MODULE_ROLES.includes(params.role as ModuleRole) ? (params.role as ModuleRole) : null;
+  const roleFeedback =
+    isRoleResult && selectedMember && params.member === selectedMember.userId && moduleLabel && resultRole
+      ? `${moduleLabel} ${teamRoleLabel(resultRole)} ${params.result === 'role-assigned' ? 'assigned to' : 'revoked from'} ${selectedMember.displayName}.`
+      : null;
 
   return (
     <main className="page-content" id="main-content">
@@ -157,6 +165,7 @@ export default async function TeamAdminPage({ searchParams }: TeamAdminPageProps
             <div className="account-card admin-card-wide team-member-card">
               <h3>Manage roles for {selectedMember.displayName}</h3>
               <p>{selectedMember.email}</p>
+              {roleFeedback ? <RoleActionFeedback message={roleFeedback} /> : null}
               {view.licensedModules.length === 0 ? (
                 <p>No modules are currently licensed to this organisation.</p>
               ) : (

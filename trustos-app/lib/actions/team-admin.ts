@@ -72,6 +72,11 @@ function teamResult(code: string, section = 'members', member?: string): never {
   redirect(`/app/admin/team?${params.toString()}`);
 }
 
+function roleResult(code: 'role-assigned' | 'role-revoked', member: string, moduleId: string, role: string): never {
+  const params = new URLSearchParams({ section: 'members', result: code, member, module: moduleId, role });
+  redirect(`/app/admin/team?${params.toString()}#role-action-feedback`);
+}
+
 async function requireClientAdmin(): Promise<ClientAdminContext> {
   const userClient = await createServerClient();
   const { data: userData, error: userError } = await userClient.auth.getUser();
@@ -303,7 +308,12 @@ export async function setTeamMemberRoleAction(formData: FormData) {
 
   revalidatePath('/app/admin/team');
   revalidatePath('/app');
-  teamResult('role-updated', 'members', targetUser.data);
+  roleResult(
+    enabled === 'true' ? 'role-assigned' : 'role-revoked',
+    targetUser.data,
+    moduleId.data,
+    role.data,
+  );
 }
 
 export async function deactivateTeamMemberAction(formData: FormData) {

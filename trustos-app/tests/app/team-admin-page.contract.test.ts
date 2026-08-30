@@ -6,6 +6,7 @@ const appRoot = process.cwd();
 const repoRoot = join(appRoot, '..');
 const pagePath = join(appRoot, 'app', '(protected)', 'app', 'admin', 'team', 'page.tsx');
 const actionPath = join(appRoot, 'lib', 'actions', 'team-admin.ts');
+const feedbackPath = join(appRoot, 'app', '(protected)', 'app', 'admin', 'team', 'role-action-feedback.tsx');
 const workspaceSource = readFileSync(
   join(appRoot, 'app', '(protected)', 'app', 'page.tsx'),
   'utf8',
@@ -19,6 +20,7 @@ const migrationPath = join(
 
 const pageSource = existsSync(pagePath) ? readFileSync(pagePath, 'utf8') : '';
 const actionSource = existsSync(actionPath) ? readFileSync(actionPath, 'utf8') : '';
+const feedbackSource = existsSync(feedbackPath) ? readFileSync(feedbackPath, 'utf8') : '';
 const migrationSource = existsSync(migrationPath) ? readFileSync(migrationPath, 'utf8') : '';
 
 describe('client team administration', () => {
@@ -28,7 +30,6 @@ describe('client team administration', () => {
     expect(pageSource).toContain("section === 'members'");
     expect(pageSource).toContain("section === 'invite'");
   });
-
   it('keeps team invitations inside licensed modules and never creates another client admin', () => {
     expect(actionSource).toContain('trustos_client_create_team_invitation');
     expect(actionSource).toContain("formData.getAll('roles')");
@@ -50,6 +51,17 @@ describe('client team administration', () => {
     expect(migrationSource).toContain("status = 'inactive'");
     expect(migrationSource).toContain("'membership_deactivated'");
     expect(migrationSource).not.toContain('delete from public.audit_events');
+  });
+
+  it('returns role actions to an unmistakable member-level confirmation', () => {
+    expect(actionSource).toContain('role-action-feedback');
+    expect(actionSource).toContain('role-assigned');
+    expect(actionSource).toContain('role-revoked');
+    expect(pageSource).toContain('<RoleActionFeedback message={roleFeedback} />');
+    expect(feedbackSource).toContain('id="role-action-feedback"');
+    expect(feedbackSource).toContain('role="status"');
+    expect(feedbackSource).toContain('aria-live="polite"');
+    expect(feedbackSource).toContain('feedbackRef.current?.focus()');
   });
 
   it('records audited client-admin role changes and keeps RPCs server-only', () => {
