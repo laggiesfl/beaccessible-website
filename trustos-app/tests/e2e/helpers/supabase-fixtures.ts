@@ -4,6 +4,13 @@ import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
 import { E2E_PASSWORD } from './test-users';
 
+export type E2EFixtureScenario =
+  | 'baseline'
+  | 'invitation_expired'
+  | 'client_b_unlicensed'
+  | 'client_b_suspended'
+  | 'client_b_membership_removed';
+
 function loadFixtureSecret() {
   if (process.env.E2E_FIXTURE_SECRET) return process.env.E2E_FIXTURE_SECRET;
   const envPath = resolve(process.cwd(), '.env.e2e.local');
@@ -14,9 +21,13 @@ function loadFixtureSecret() {
   return line.slice('E2E_FIXTURE_SECRET='.length).trim();
 }
 
-export async function resetE2EFixtures(request: APIRequestContext) {
+export async function resetE2EFixtures(
+  request: APIRequestContext,
+  scenario: E2EFixtureScenario = 'baseline',
+) {
   const response = await request.post('/api/test/e2e-reset', {
     headers: { Authorization: `Bearer ${loadFixtureSecret()}` },
+    data: { scenario },
   });
   if (!response.ok()) throw new Error(`E2E fixture reset failed with HTTP ${response.status()}.`);
 }
