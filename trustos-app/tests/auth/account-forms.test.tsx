@@ -4,12 +4,13 @@ import ForgotPasswordPage from '@/app/(auth)/forgot-password/page';
 import ResetPasswordPage from '@/app/(auth)/reset-password/page';
 import SignInPage from '@/app/(auth)/sign-in/page';
 
-test('sign-in exposes labels, password-manager hints and an announced error summary', async () => {
+test('sign-in exposes labels, password-manager hints and a focused announced error summary', async () => {
   render(await SignInPage({ searchParams: Promise.resolve({ error: 'invalid' }) }));
 
   expect(screen.getByLabelText('Email address')).toHaveAttribute('autocomplete', 'email');
   expect(screen.getByLabelText('Password')).toHaveAttribute('autocomplete', 'current-password');
   expect(screen.getByRole('alert')).toHaveTextContent('We could not sign you in');
+  expect(screen.getByRole('alert')).toHaveFocus();
   expect(screen.getByRole('button', { name: 'Show password' })).toHaveAttribute('aria-pressed', 'false');
 });
 
