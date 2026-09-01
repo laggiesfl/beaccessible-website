@@ -35,6 +35,14 @@ test.describe.serial('account lifecycle', () => {
     await expect(page.getByRole('heading', { name: 'TrustOS invitation unavailable' })).toBeVisible();
   });
 
+  test('an expired invitation cannot be activated', async ({ page, request }) => {
+    await resetE2EFixtures(request);
+    await signInFixture(page, E2E_USERS.invitee.email);
+    await resetE2EFixtures(request, 'invitation_expired');
+    await page.goto(`/accept-invitation?invitation=${E2E_IDS.invitation}`);
+    await expect(page.getByRole('heading', { name: 'TrustOS invitation unavailable' })).toBeVisible();
+  });
+
   test('password recovery gives a generic confirmation for an unknown address', async ({ page }) => {
     await page.goto('/forgot-password');
     await page.getByLabel('Email address').fill('unknown-e2e-user@example.invalid');
