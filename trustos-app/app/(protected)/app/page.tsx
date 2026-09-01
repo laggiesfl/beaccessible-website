@@ -1,12 +1,16 @@
 import Link from 'next/link';
 
+import { ModuleShell } from '@/components/module-shell';
 import { createServerClient } from '@/lib/supabase/server';
+
+const moduleDefinitions = [
+  { id: 'trustops' as const, name: 'TrustOps' },
+  { id: 'grantflow' as const, name: 'GrantFlow' },
+];
 
 export default async function WorkspacePage() {
   const supabase = await createServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
   const isPlatformAdmin = user?.app_metadata?.platform_role === 'platform_admin';
 
   const memberships = user?.id
@@ -18,8 +22,7 @@ export default async function WorkspacePage() {
     : { data: [], error: null };
   const activeMembership = memberships.data?.[0] ?? null;
   const clientAdminMembership =
-    !isPlatformAdmin &&
-    memberships.data?.find((membership) => membership.organization_role === 'client_admin');
+    !isPlatformAdmin && memberships.data?.find((membership) => membership.organization_role === 'client_admin');
 
   const moduleLicences = activeMembership
     ? await supabase
@@ -28,6 +31,7 @@ export default async function WorkspacePage() {
         .eq('organization_id', activeMembership.organization_id)
         .eq('status', 'active')
     : { data: [], error: null };
+
   const moduleRoles = activeMembership && user?.id
     ? await supabase
         .from('module_role_assignments')
@@ -37,9 +41,10 @@ export default async function WorkspacePage() {
         .eq('status', 'active')
     : { data: [], error: null };
 
-  const moduleAvailable = (moduleId: string) =>
-    Boolean(moduleLicences.data?.some((item) => item.module_id === moduleId)) &&
-    Boolean(moduleRoles.data?.some((item) => item.module_id === moduleId));
+  const availableModules = moduleDefinitions.filter((module) =>
+    Boolean(moduleLicences.data?.some((item) => item.module_id === module.id)) &&
+    Boolean(moduleRoles.data?.some((item) => item.module_id === module.id)),
+  );
 
   return (
     <div className="page-content workspace-page">
@@ -53,31 +58,7 @@ export default async function WorkspacePage() {
         {user?.email ? <p className="signed-in-as">Signed in as {user.email}</p> : null}
       </header>
 
-      <section aria-labelledby="modules-heading">
-        <h2 id="modules-heading">Modules</h2>
-        <div className="workspace-grid">
-          <article className="module-card">
-            <p className="module-status">
-              {moduleAvailable('trustops') ? 'Available to your role' : 'Access controlled'}
-            </p>
-            <h3>TrustOps</h3>
-            <p>
-              Governance, assurance and operational trust workflows. Access is enforced by your
-              organisation licence and assigned TrustOS role.
-            </p>
-          </article>
-          <article className="module-card">
-            <p className="module-status">
-              {moduleAvailable('grantflow') ? 'Available to your role' : 'Access controlled'}
-            </p>
-            <h3>GrantFlow</h3>
-            <p>
-              Grant workflow and evidence-management capability. Access is enforced independently
-              from TrustOps.
-            </p>
-          </article>
-        </div>
-      </section>
+      <ModuleShell modules={availableModules} initialModule={availableModules[0]?.id} />
 
       {clientAdminMembership ? (
         <section className="workspace-admin" aria-labelledby="team-admin-heading">
@@ -100,8 +81,8 @@ export default async function WorkspacePage() {
       ) : null}
 
       <aside className="status-message" aria-label="Pilot status">
-        <strong>Phase 2 pilot status:</strong> identity, access, invitation and administration
-        foundations are being verified before operational client data is introduced.
+        <strong>Phase 2 pilot status:</strong> access-controlled TrustOps and GrantFlow delivery is
+        being verified before operational client data is introduced.
       </aside>
     </div>
   );

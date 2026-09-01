@@ -52,3 +52,15 @@ test('GrantFlow escapes applicant-provided organisation names before HTML render
   assert.ok(grantFlow.includes('function escapeHtml('));
   assert.ok(grantFlow.includes('${escapeHtml(app.organisation)}'));
 });
+
+
+test('TrustOS Phase 2 serves byte-identical copies of both legacy modules', () => {
+  const trustOpsCopy = fs.readFileSync(
+    path.join(root, 'trustos-app', 'legacy', 'trustops.html'),
+  );
+  const grantFlowCopy = fs.readFileSync(
+    path.join(root, 'trustos-app', 'legacy', 'grantflow.html'),
+  );
+  assert.deepEqual(trustOpsCopy, fs.readFileSync(path.join(root, 'trustops.html')));
+  assert.deepEqual(grantFlowCopy, fs.readFileSync(path.join(root, 'grantflow.html')));
+});
