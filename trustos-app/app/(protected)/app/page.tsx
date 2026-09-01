@@ -80,6 +80,16 @@ export default async function WorkspacePage() {
         </section>
       ) : null}
 
+      {clientAdminMembership || isPlatformAdmin ? (
+        <section className="workspace-admin" aria-labelledby="audit-heading">
+          <h2 id="audit-heading">Access security audit</h2>
+          <p>Review read-only access and security events available to your administrator role.</p>
+          <Link className="secondary-button action-link" href="/app/audit">
+            Open access security audit
+          </Link>
+        </section>
+      ) : null}
+
       <aside className="status-message" aria-label="Pilot status">
         <strong>Phase 2 pilot status:</strong> access-controlled TrustOps and GrantFlow delivery is
         being verified before operational client data is introduced.
