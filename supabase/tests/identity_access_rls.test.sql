@@ -83,8 +83,8 @@ insert into public.profiles (user_id, display_name) values
   ('20000000-0000-0000-0000-000000000002', 'Fictional Admin B');
 
 insert into public.organizations (id, name) values
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'Fictional Client A'),
-  ('bbbbbbbb-0000-0000-0000-000000000002', 'Fictional Client B');
+  ('aaaaaaaa-0000-0000-0000-000000000001', 'Fictional RLS Client A'),
+  ('bbbbbbbb-0000-0000-0000-000000000002', 'Fictional RLS Client B');
 
 insert into public.organization_memberships (
   organization_id,
@@ -142,7 +142,7 @@ select set_config(
 
 select results_eq(
   $$select name from public.organizations order by name$$,
-  $$values ('Fictional Client A'::text)$$,
+  $$values ('Fictional RLS Client A'::text)$$,
   'a client administrator can see only their active organisation'
 );
 select results_eq(
