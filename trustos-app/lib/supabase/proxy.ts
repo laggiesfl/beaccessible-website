@@ -56,7 +56,9 @@ export async function updateSession(request: NextRequest) {
 
   const { data, error } = await supabase.auth.getClaims();
 
-  if ((error || !data?.claims) && protectedPath(request.nextUrl.pathname)) {
+  const isProtected = protectedPath(request.nextUrl.pathname);
+
+  if ((error || !data?.claims) && isProtected) {
     const redirectUrl = request.nextUrl.clone();
     const requestedPath = request.nextUrl.pathname + request.nextUrl.search;
 
@@ -67,6 +69,29 @@ export async function updateSession(request: NextRequest) {
     copySessionResponse(response, redirectResponse);
 
     return redirectResponse;
+  }
+
+  if (isProtected && data?.claims) {
+    const sessionId = data.claims.session_id;
+    const userId = data.claims.sub;
+    if (typeof sessionId !== 'string' || typeof userId !== 'string') {
+      const expiredUrl = request.nextUrl.clone();
+      expiredUrl.pathname = '/sign-in';
+      expiredUrl.search = '?error=session-expired';
+      const expiredResponse = NextResponse.redirect(expiredUrl);
+      copySessionResponse(response, expiredResponse);
+      return expiredResponse;
+    }
+
+    const { data: touched, error: touchError } = await supabase.rpc('touch_own_trustos_app_session');
+    if (touchError || !Array.isArray(touched) || touched.length !== 1) {
+      const expiredUrl = request.nextUrl.clone();
+      expiredUrl.pathname = '/sign-in';
+      expiredUrl.search = '?error=session-expired';
+      const expiredResponse = NextResponse.redirect(expiredUrl);
+      copySessionResponse(response, expiredResponse);
+      return expiredResponse;
+    }
   }
 
   return response;

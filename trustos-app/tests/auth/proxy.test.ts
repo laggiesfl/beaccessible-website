@@ -5,6 +5,7 @@ import { updateSession } from '@/lib/supabase/proxy';
 const supabaseState = vi.hoisted(() => ({
   claims: null as Record<string, unknown> | null,
   cookieOptions: null as Record<string, unknown> | null,
+  touchResult: [{ created_at: '2026-09-01T09:00:00Z', last_activity_at: '2026-09-01T09:00:00Z' }] as unknown[],
 }));
 
 vi.mock('@supabase/ssr', () => ({
@@ -28,6 +29,10 @@ vi.mock('@supabase/ssr', () => ({
     supabaseState.cookieOptions = options.cookieOptions;
 
     return {
+      rpc: async (name: string) => {
+        if (name !== 'touch_own_trustos_app_session') throw new Error('unexpected rpc');
+        return { data: supabaseState.touchResult, error: null };
+      },
       auth: {
         getClaims: async () => {
           options.cookies.setAll(
@@ -64,6 +69,7 @@ beforeEach(() => {
   );
   supabaseState.claims = null;
   supabaseState.cookieOptions = null;
+  supabaseState.touchResult = [{ created_at: '2026-09-01T09:00:00Z', last_activity_at: '2026-09-01T09:00:00Z' }];
 });
 
 afterEach(() => {
@@ -106,7 +112,7 @@ test('keeps a public sign-in request available and copies refreshed cookies', as
 });
 
 test('keeps an authenticated protected request accessible', async () => {
-  supabaseState.claims = { sub: 'user-123' };
+  supabaseState.claims = { sub: 'user-123', session_id: 'session-123' };
 
   const response = await updateSession(
     new NextRequest('https://trustos.example/app'),
@@ -123,4 +129,13 @@ test('keeps an unauthenticated sign-in request accessible', async () => {
 
   expect(response.status).toBe(200);
   expect(response.headers.get('location')).toBeNull();
+});
+
+
+test('redirects when the server-authoritative app session has expired', async () => {
+  supabaseState.claims = { sub: 'user-123', session_id: 'session-123' };
+  supabaseState.touchResult = [];
+  const response = await updateSession(new NextRequest('https://trustos.example/app'));
+  expect(response.status).toBe(307);
+  expect(response.headers.get('location')).toBe('https://trustos.example/sign-in?error=session-expired');
 });

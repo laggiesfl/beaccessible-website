@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { getServerEnv } from '@/lib/env';
+import { consumeRateLimit } from '@/lib/security/rate-limit';
+import { requireFreshSession } from '@/lib/security/session-server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createServerClient } from '@/lib/supabase/server';
 
@@ -96,6 +98,8 @@ export async function createOrganizationAction(formData: FormData) {
   if (!parsed.success) platformResult('invalid-organization', 'create');
 
   const { userId, admin } = await requirePlatformAdmin();
+  const rate = await consumeRateLimit({ bucket: 'privileged_mutation', subject: userId, windowSeconds: 3600, limitCount: 60 });
+  if (!rate.allowed) platformResult('organization-rate-limited', 'create');
   const { data: activeOrganizations, error: lookupError } = await admin
     .from('organizations')
     .select('name')
@@ -134,6 +138,9 @@ export async function setOrganizationModuleAction(formData: FormData) {
   }
 
   const { userId, admin } = await requirePlatformAdmin();
+  await requireFreshSession();
+  const rate = await consumeRateLimit({ bucket: 'privileged_mutation', subject: userId, windowSeconds: 3600, limitCount: 60 });
+  if (!rate.allowed) platformResult('module-rate-limited', 'licensing');
   const { error } = await admin.rpc('trustos_platform_set_module', {
     actor_user: userId,
     target_org: organizationId.data,
@@ -153,6 +160,8 @@ export async function inviteClientAdminAction(formData: FormData) {
   if (!organizationId.success || !email.success) platformResult('invitation-invalid', 'invitations');
 
   const { userId, admin } = await requirePlatformAdmin();
+  const rate = await consumeRateLimit({ bucket: 'invitation_send', subject: userId, windowSeconds: 3600, limitCount: 10 });
+  if (!rate.allowed) platformResult('invitation-rate-limited', 'invitations');
   const { data: invitationId, error: invitationError } = await admin.rpc(
     'trustos_platform_create_client_admin_invitation',
     { actor_user: userId, target_org: organizationId.data, target_email: email.data },
@@ -194,6 +203,9 @@ export async function suspendOrganizationAction(formData: FormData) {
   }
 
   const { userId, admin } = await requirePlatformAdmin();
+  await requireFreshSession();
+  const rate = await consumeRateLimit({ bucket: 'privileged_mutation', subject: userId, windowSeconds: 3600, limitCount: 60 });
+  if (!rate.allowed) platformResult('suspension-rate-limited', 'suspension');
   const { error } = await admin.rpc('trustos_platform_suspend_organization', {
     actor_user: userId,
     target_org: organizationId.data,

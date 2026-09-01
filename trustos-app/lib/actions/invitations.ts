@@ -3,6 +3,7 @@ import 'server-only';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
+import { registerCurrentAppSession } from '@/lib/security/session-server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createServerClient } from '@/lib/supabase/server';
 
@@ -210,5 +211,6 @@ export async function acceptInvitationAction(formData: FormData) {
     redirect('/sign-in?platform=activated');
   }
 
+  await registerCurrentAppSession(userClient, verifiedUser.id);
   redirect('/app');
 }

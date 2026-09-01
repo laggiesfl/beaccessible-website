@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { getServerEnv } from '@/lib/env';
+import { consumeRateLimit } from '@/lib/security/rate-limit';
+import { requireFreshSession } from '@/lib/security/session-server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createServerClient } from '@/lib/supabase/server';
 import type { ModuleRole } from '@/lib/authz/types';
@@ -226,6 +228,8 @@ export async function inviteTeamMemberAction(formData: FormData) {
   }
 
   const { userId, organizationId, admin } = await requireClientAdmin();
+  const rate = await consumeRateLimit({ bucket: 'invitation_send', subject: userId, windowSeconds: 3600, limitCount: 10 });
+  if (!rate.allowed) teamResult('invitation-rate-limited', 'invite');
   const { data: invitationId, error: invitationError } = await admin.rpc(
     'trustos_client_create_team_invitation',
     {
@@ -289,6 +293,9 @@ export async function setTeamMemberRoleAction(formData: FormData) {
   }
 
   const { userId, organizationId, admin } = await requireClientAdmin();
+  await requireFreshSession();
+  const rate = await consumeRateLimit({ bucket: 'privileged_mutation', subject: userId, windowSeconds: 3600, limitCount: 60 });
+  if (!rate.allowed) teamResult('role-rate-limited', 'members', targetUser.data);
   const { error } = await admin.rpc('trustos_client_set_module_role', {
     actor_user: userId,
     target_org: organizationId,
@@ -324,6 +331,9 @@ export async function deactivateTeamMemberAction(formData: FormData) {
   }
 
   const { userId, organizationId, admin } = await requireClientAdmin();
+  await requireFreshSession();
+  const rate = await consumeRateLimit({ bucket: 'privileged_mutation', subject: userId, windowSeconds: 3600, limitCount: 60 });
+  if (!rate.allowed) teamResult('deactivation-rate-limited', 'members', targetUser.data);
   if (targetUser.data === userId) {
     teamResult('deactivation-self-denied', 'members', targetUser.data);
   }

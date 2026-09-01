@@ -481,3 +481,28 @@ textarea:focus-visible,
   border-radius: 0.5rem;
   background: var(--white);
 }
+
+.session-warning {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  width: min(100% - 2rem, 72rem);
+  margin: 0 auto;
+  padding: 1rem;
+  border: 3px solid var(--deep-blue);
+  border-radius: 0.5rem;
+  background: var(--white);
+  box-shadow: 0 0.5rem 1.5rem rgb(31 63 107 / 0.14);
+}
+
+.session-warning h2 {
+  margin: 0;
+  color: var(--deep-blue);
+  font-size: 1.15rem;
+}
+
+.session-warning-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

@@ -5,6 +5,8 @@ import { z } from 'zod';
 
 import { recordAuditEvent } from '@/lib/audit/events';
 import { getServerEnv } from '@/lib/env';
+import { consumeRateLimit, signInDelaySeconds } from '@/lib/security/rate-limit';
+import { registerCurrentAppSession } from '@/lib/security/session-server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createServerClient } from '@/lib/supabase/server';
 
@@ -95,6 +97,11 @@ export async function signInAction(formData: FormData) {
     redirect(signInFailureLocation(emailInput, next));
   }
 
+  const rate = await consumeRateLimit({ bucket: 'sign_in', subject: parsed.data.email, windowSeconds: 900, limitCount: 10 });
+  if (!rate.allowed) redirect(signInFailureLocation(parsed.data.email, next));
+  const delay = signInDelaySeconds(rate.currentCount);
+  if (delay) await new Promise((resolve) => setTimeout(resolve, delay * 1000));
+
   const supabase = await createServerClient();
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
@@ -109,6 +116,7 @@ export async function signInAction(formData: FormData) {
   }
 
   try {
+    await registerCurrentAppSession(supabase, data.user.id);
     await recordAuditEvent({
       actorUserId: data.user.id,
       eventType: 'sign_in_succeeded',
@@ -130,6 +138,8 @@ export async function requestRecoveryAction(formData: FormData) {
   const supabase = await createServerClient();
 
   if (parsed.success) {
+    const rate = await consumeRateLimit({ bucket: 'password_recovery', subject: parsed.data.email, windowSeconds: 3600, limitCount: 5 });
+    if (!rate.allowed) redirect('/forgot-password?sent=1');
     const { TRUSTOS_APP_ORIGIN } = getServerEnv();
     const redirectTo = `${TRUSTOS_APP_ORIGIN}/api/auth/callback?next=/reset-password`;
     const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
