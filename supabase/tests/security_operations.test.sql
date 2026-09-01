@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(15);
+select plan(17);
 
 select has_table('private','app_sessions','app sessions are server authoritative');
 select has_table('private','rate_limit_buckets','rate limit buckets are private');
@@ -10,13 +10,15 @@ select has_function('private','run_audit_retention',array[]::text[],'private ret
 select has_function('public','run_trustos_audit_retention',array[]::text[],'service retention wrapper exists');
 select has_function('public','register_trustos_app_session',array['uuid','uuid'],'session registration wrapper exists');
 select has_function('public','touch_trustos_app_session',array['uuid','uuid'],'service session touch wrapper exists');
+select has_function('private','touch_own_trustos_app_session',array[]::text[],'private own-session touch implementation exists');
 select has_function('public','touch_own_trustos_app_session',array[]::text[],'own-session touch wrapper exists');
 
 select ok(has_function_privilege('service_role','public.consume_trustos_rate_limit(text,text,integer,integer)','EXECUTE'),'service role can consume limits');
 select ok(not has_function_privilege('authenticated','public.consume_trustos_rate_limit(text,text,integer,integer)','EXECUTE'),'authenticated clients cannot consume limits directly');
 select ok(has_function_privilege('service_role','public.run_trustos_audit_retention()','EXECUTE'),'service role can run retention');
 select ok(has_function_privilege('authenticated','public.touch_own_trustos_app_session()','EXECUTE'),'authenticated users can touch only their own session');
-select ok((select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='touch_own_trustos_app_session'),'own-session wrapper crosses private boundary only as security definer');
+select ok(not (select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='touch_own_trustos_app_session'),'public own-session wrapper is security invoker');
+select ok((select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname='touch_own_trustos_app_session'),'private own-session implementation is security definer');
 select ok(not has_table_privilege('authenticated','private.app_sessions','SELECT'),'authenticated clients cannot read private app sessions');
 
 select * from finish();
