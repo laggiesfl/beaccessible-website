@@ -7,12 +7,14 @@ on:
       - main
     paths:
       - "trustos-app/**"
+      - "scripts/**"
       - ".github/workflows/trustos-app-verification.yml"
   push:
     branches:
       - phase2/identity-access-design
     paths:
       - "trustos-app/**"
+      - "scripts/**"
       - ".github/workflows/trustos-app-verification.yml"
 
 permissions:
@@ -24,9 +26,9 @@ concurrency:
 
 jobs:
   verify-app:
-    name: Unit tests, typecheck and production build
+    name: Unit, type, build and regression gates
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: trustos-app
@@ -53,6 +55,9 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci
 
+      - name: Install regression browser
+        run: npx playwright install chromium
+
       - name: Run TrustOS unit tests
         run: npm test
 
@@ -62,4 +67,9 @@ jobs:
       - name: Build production application
         run: npm run build
 
-      # This branch-only comment deliberately triggers a PR verification run after the workflow was added to main.
+      - name: Run legacy and browser regressions
+        working-directory: .
+        env:
+          CODEX_PRIMARY_RUNTIME_NODE_MODULES: ${{ github.workspace }}/trustos-app/node_modules
+          TRUSTOS_REQUIRE_BROWSER: "1"
+        run: node --test scripts/*.test.cjs
