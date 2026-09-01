@@ -1,1 +1,6 @@
 .worktrees/
+.vercel/
+.env*
+!.env.example
+test-results/
+playwright-report/
