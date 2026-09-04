@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy notice',
+};
+
 export default function TrustOSPrivacyPage() {
   return (
     <article className="account-card" aria-labelledby="privacy-heading">

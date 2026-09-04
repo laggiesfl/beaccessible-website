@@ -1,7 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { ModuleShell } from '@/components/module-shell';
 import { createServerClient } from '@/lib/supabase/server';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 const moduleDefinitions = [
   { id: 'trustops' as const, name: 'TrustOps' },

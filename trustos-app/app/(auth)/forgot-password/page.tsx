@@ -1,10 +1,15 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AccountForm } from '@/components/account-form';
 import {
   RECOVERY_CONFIRMATION,
   requestRecoveryAction,
 } from '@/lib/actions/auth';
+
+export const metadata: Metadata = {
+  title: 'Forgot password',
+};
 
 type ForgotPasswordPageProps = {
   searchParams: Promise<{ sent?: string }>;

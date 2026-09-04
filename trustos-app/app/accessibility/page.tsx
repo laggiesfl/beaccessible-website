@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Accessibility',
+};
+
 export default function AccessibilityPage() {
   return (
     <article className="account-card" aria-labelledby="accessibility-heading">

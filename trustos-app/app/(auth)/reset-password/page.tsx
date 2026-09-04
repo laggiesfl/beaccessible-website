@@ -1,9 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AccountForm } from '@/components/account-form';
 import { ErrorSummary } from '@/components/error-summary';
 import { PasswordField } from '@/components/password-field';
 import { resetPasswordAction } from '@/lib/actions/auth';
+
+export const metadata: Metadata = {
+  title: 'Reset password',
+};
 
 type ResetPasswordPageProps = {
   searchParams: Promise<{ error?: string }>;

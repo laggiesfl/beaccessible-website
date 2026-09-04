@@ -1,9 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AccountForm } from '@/components/account-form';
 import { ErrorSummary } from '@/components/error-summary';
 import { PasswordField } from '@/components/password-field';
 import { signInAction, safeNextPath } from '@/lib/actions/auth';
+
+export const metadata: Metadata = {
+  title: 'Sign in',
+};
 
 type SignInPageProps = {
   searchParams: Promise<{

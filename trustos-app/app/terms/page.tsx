@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Account terms',
+};
+
 export default function TrustOSAccountTermsPage() {
   return (
     <article className="account-card" aria-labelledby="terms-heading">

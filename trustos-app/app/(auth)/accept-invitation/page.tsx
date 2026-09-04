@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AccountForm } from '@/components/account-form';
 import { ErrorSummary } from '@/components/error-summary';
@@ -7,6 +8,10 @@ import {
   acceptInvitationAction,
   getInvitationPreview,
 } from '@/lib/actions/invitations';
+
+export const metadata: Metadata = {
+  title: 'Accept invitation',
+};
 
 type AcceptInvitationPageProps = {
   searchParams: Promise<{ invitation?: string; error?: string }>;
