@@ -1,3 +1,5 @@
+import { getServerEnv } from '@/lib/env';
+import { hashRateLimitSubject } from '@/lib/security/rate-limit';
 import { authorizeCronRequest } from '@/lib/security/retention';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -8,6 +10,13 @@ const INVITEE_EMAIL = 'e2e-invitee@example.invalid';
 const CLIENT_B_ID = '10000000-0000-4000-8000-000000000003';
 const CLIENT_B_ORG_ID = '20000000-0000-4000-8000-000000000002';
 const INITIAL_PASSWORD = 'TrustOS-E2E-Accessible-2026!';
+const E2E_RATE_LIMIT_EMAILS = [
+  'e2e-platform-admin@example.invalid', 'e2e-client-a@example.invalid',
+  'e2e-client-b@example.invalid', INVITEE_EMAIL, 'e2e-viewer@example.invalid',
+  'e2e-contributor@example.invalid', 'e2e-reviewer@example.invalid',
+  'e2e-approver@example.invalid', 'e2e-module-admin@example.invalid',
+  'unknown-e2e-user@example.invalid',
+];
 const SCENARIOS = new Set([
   'baseline',
   'invitation_expired',
@@ -32,6 +41,13 @@ export async function POST(request: Request) {
   if (!SCENARIOS.has(scenario)) return new Response('Unknown fixture scenario', { status: 400 });
 
   const admin = createAdminClient();
+  const rateLimitKey = getServerEnv().RATE_LIMIT_HMAC_KEY;
+  const rateLimitHashes = E2E_RATE_LIMIT_EMAILS.map((email) => hashRateLimitSubject(email, rateLimitKey));
+  const resetRateLimits = await admin.rpc('reset_trustos_rate_limit_state', {
+    target_buckets: ['sign_in', 'password_recovery'],
+    target_subject_hashes: rateLimitHashes,
+  });
+  if (resetRateLimits.error) return failed();
   const revoke = await admin.rpc('revoke_trustos_user_sessions', { target_user: INVITEE_ID });
   if (revoke.error) return failed();
 

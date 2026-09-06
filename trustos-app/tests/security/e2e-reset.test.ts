@@ -28,3 +28,12 @@ test('E2E reset scenarios are allowlisted and fail closed', () => {
   expect(source).toContain("'client_b_membership_removed'");
   expect(source).toContain("if (!SCENARIOS.has(scenario)) return new Response('Unknown fixture scenario', { status: 400 });");
 });
+
+test('E2E reset clears only fixed fictional rate-limit subjects', () => {
+  const source = readFileSync(routePath, 'utf8');
+  expect(source).toContain("hashRateLimitSubject");
+  expect(source).toContain("reset_trustos_rate_limit_state");
+  expect(source).toContain("'sign_in'");
+  expect(source).toContain("'password_recovery'");
+  expect(source).toContain('unknown-e2e-user@example.invalid');
+});
