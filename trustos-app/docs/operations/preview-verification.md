@@ -1,20 +1,27 @@
 # TrustOS Phase 2 preview verification
 
 **Status:** PREVIEW VERIFICATION IN PROGRESS — NOT APPROVED FOR PRODUCTION  
-**Record date:** 2026-09-02  
+**Record date:** 2026-09-06
 **Branch:** `phase2/identity-access-design`  
-**Recorded commit:** `06e39247018eb2fe5368841d99772287f6657d0c`  
+**Verified application commit:** `cf7af6ad75979766f4ec733cd9567971e5dd5f45`
 **Staging project:** `trustos-phase-2-preview`  
 **Stable staging origin:** `https://trustos-phase-2-preview.vercel.app`
 
 ## Verified gates
 
-- Vercel deployment status for the recorded commit: success.
-- TrustOS application unit, TypeScript, production-build and Chromium legacy/browser regression gates passed on the Phase 2 branch before the database-only follow-up commits.
+- Vercel staging deployment for the verified application commit: READY.
+- Current application unit/component suite: **108/108 passed** across 22 files.
+- TypeScript verification: passed.
+- Production build: passed.
+- Full staged Playwright matrix: **48/48 passed** with no skips: 24 Chromium and 24 Firefox.
+- Deployed axe coverage passed for sign-in, invitation activation, client workspace, team administration, audit and platform administration.
+- Staged 320 CSS pixel reflow, reduced-motion, forced-colour and sign-in focus/error-summary checks passed in Chromium and Firefox.
+- Fictional two-organisation release-denial and tenant-isolation matrix passed in Chromium and Firefox.
+- Module-role checks passed for fictional viewer, contributor, reviewer, approver and module administrator accounts; roleless GrantFlow access remained denied.
+- Licensed client administrator module switching passed; unlicensed GrantFlow, suspended-organisation and removed-membership denials passed.
 - Disposable Supabase reset from tracked migrations: passed.
 - Full Supabase pgTAP database matrix: passed.
 - Warning-level local database lint with `--fail-on warning`: passed.
-- Hosted Supabase security advisor: no unresolved Phase 2 database warning after the session-touch boundary correction.
 - The public session-touch RPC is `SECURITY INVOKER`; the privileged JWT-derived implementation is confined to the `private` schema.
 
 ## Commands represented by this record
@@ -31,18 +38,14 @@ supabase db lint --local --level warning --fail-on warning
 
 ## Remaining release evidence
 
-The following are release gates and are **not yet recorded as passed**:
+The following release gates are **not yet recorded as passed**:
 
-- Full staged Playwright suite in both Chromium and Firefox with no skips.
-- Deployed two-organisation denial matrix using the fictional E2E fixtures.
-- Deployed axe checks across sign-in, invitation, workspace, platform administration, team administration and audit views.
-- Keyboard-only completion and focus checks across all critical account journeys.
-- 320 CSS pixel and 400% equivalent reflow checks on the staged build.
-- Reduced-motion and forced-colour browser verification.
-- NVDA verification with Firefox and Chromium on the critical account journeys.
+- Manual keyboard-only completion across the full set of critical account journeys beyond the automated focus/keyboard checks already recorded.
+- NVDA verification with Firefox and a Chromium browser on the critical account journeys.
 - Browser-console and sensitive-network-payload review against the final staged deployment.
+- Supabase Auth leaked-password protection enablement and re-check.
 
-The Windows E2E runner holding the local protected fixture credential was offline when this record was updated. The credential has deliberately not been copied into GitHub.
+The protected E2E fixture credential remains local to the authorised Windows runner and has deliberately not been copied into GitHub.
 
 ## Current known limitation
 
