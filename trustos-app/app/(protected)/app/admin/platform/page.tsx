@@ -60,7 +60,7 @@ export default async function PlatformAdminPage({ searchParams }: PlatformAdminP
   const message = params.result ? RESULT_MESSAGES[params.result] : null;
 
   return (
-    <main className="page-content" id="main-content">
+    <div className="page-content">
       <header className="admin-page-header">
         <h1>BeAccessible TrustOS platform administration</h1>
         <p>
@@ -216,6 +216,6 @@ export default async function PlatformAdminPage({ searchParams }: PlatformAdminP
           )}
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }

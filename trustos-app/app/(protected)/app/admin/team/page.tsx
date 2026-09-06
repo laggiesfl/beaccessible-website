@@ -85,7 +85,7 @@ export default async function TeamAdminPage({ searchParams }: TeamAdminPageProps
       : null;
 
   return (
-    <main className="page-content" id="main-content">
+    <div className="page-content">
       <header className="admin-page-header">
         <p className="eyebrow">{view.organization.name}</p>
         <h1>Team administration</h1>
@@ -247,6 +247,6 @@ export default async function TeamAdminPage({ searchParams }: TeamAdminPageProps
           )}
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }

@@ -113,7 +113,7 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
   const hasNext = to + 1 < total;
 
   return (
-    <main className="page-content" id="main-content">
+    <div className="page-content">
       <header className="admin-page-header">
         <p className="eyebrow">BeAccessible TrustOS</p>
         <h1>Access security audit</h1>
@@ -129,6 +129,6 @@ export default async function AuditPage({ searchParams }: AuditPageProps) {
         <span>Page {currentPage}</span>
         {hasNext ? <Link href={`/app/audit?page=${currentPage + 1}`}>Next 50 events</Link> : <span>Last page</span>}
       </nav>
-    </main>
+    </div>
   );
 }
