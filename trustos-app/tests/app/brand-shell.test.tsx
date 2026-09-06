@@ -3,10 +3,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
 import RootLayout from '@/app/layout';
 
-test('provides a named main region and TrustOS brand', () => {
+test('provides a main landmark, skip link and TrustOS brand', () => {
   const documentMarkup = renderToStaticMarkup(
     <RootLayout>
-      <main aria-label="TrustOS content">Test</main>
+      <div>Test</div>
     </RootLayout>,
   );
 
@@ -18,7 +18,9 @@ test('provides a named main region and TrustOS brand', () => {
   try {
     expect(screen.getByText('Skip to main content')).toHaveAttribute('href', '#main-content');
     expect(screen.getByText('TrustOS')).toBeInTheDocument();
-    expect(screen.getByLabelText('TrustOS content')).toBeInTheDocument();
+    const main = screen.getByRole('main');
+    expect(main).toHaveAttribute('id', 'main-content');
+    expect(main).toHaveTextContent('Test');
   } finally {
     documentContainer.remove();
   }

@@ -19,9 +19,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="site-header">
           <span className="brand">TrustOS</span>
         </header>
-        <div id="main-content" className="site-main" tabIndex={-1}>
+        <main id="main-content" className="site-main" tabIndex={-1}>
           {children}
-        </div>
+        </main>
         <footer className="site-footer">
           <a href="/accessibility">Accessibility</a> · <a href="/privacy">Privacy</a>
         </footer>

@@ -66,8 +66,10 @@ test('reduced-motion preference suppresses motion', async ({ page }) => {
     const style = getComputedStyle(element);
     return { animationDuration: style.animationDuration, transitionDuration: style.transitionDuration };
   });
-  expect(values.animationDuration).toBe('0.01ms');
-  expect(values.transitionDuration).toBe('0.01ms');
+  const durationToMs = (value: string) =>
+    value.endsWith('ms') ? Number.parseFloat(value) : Number.parseFloat(value) * 1000;
+  expect(durationToMs(values.animationDuration)).toBeCloseTo(0.01, 5);
+  expect(durationToMs(values.transitionDuration)).toBeCloseTo(0.01, 5);
 });
 
 test('forced-colours mode remains usable and axe-clean', async ({ page }) => {
