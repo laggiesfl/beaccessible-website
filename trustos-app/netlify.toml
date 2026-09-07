@@ -1,0 +1,21 @@
+[build]
+command = "npm run build && cp -R public/* .next/"
+publish = ".next"
+
+[build.environment]
+NODE_VERSION = "24"
+
+[[redirects]]
+from = "/"
+to = "/knowledge-impact-demo"
+status = 302
+
+[[redirects]]
+from = "/knowledge-impact-demo"
+to = "/server/app/knowledge-impact-demo.html"
+status = 200
+
+[[redirects]]
+from = "/_next/static/*"
+to = "/static/:splat"
+status = 200
