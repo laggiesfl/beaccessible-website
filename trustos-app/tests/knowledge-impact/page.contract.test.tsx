@@ -24,6 +24,18 @@ describe('KnowledgeImpactDemo', () => {
     expect(navigation.querySelectorAll('button')).toHaveLength(8);
   });
 
+  it('provides keyboard-operable high contrast and reduced motion controls', () => {
+    render(<KnowledgeImpactDemo />);
+    const highContrast = screen.getByRole('button', { name: 'High contrast' });
+    const reducedMotion = screen.getByRole('button', { name: 'Reduced motion' });
+    expect(highContrast).toHaveAttribute('aria-pressed', 'false');
+    expect(reducedMotion).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(highContrast);
+    fireEvent.click(reducedMotion);
+    expect(highContrast).toHaveAttribute('aria-pressed', 'true');
+    expect(reducedMotion).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('uses native keyboard-focusable buttons for view navigation', () => {
     render(<KnowledgeImpactDemo />);
     const portfolioButton = screen.getByRole('button', { name: 'Portfolio intelligence' });
