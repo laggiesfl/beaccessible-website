@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">BeAccessible logo</title>
+  <desc id="desc">Circular badge with wheelchair user, pram, shopping trolley, and accessibility ramp icons, text reads BEACCESSIBLE CREATING ACCESS FOR ALL</desc>
+  <defs>
+    <clipPath id="beaccessible-circle">
+      <circle cx="64" cy="64" r="63.5" />
+    </clipPath>
+  </defs>
+  <image href="/beaccessible-logo.svg" width="128" height="128" preserveAspectRatio="xMidYMid meet" clip-path="url(#beaccessible-circle)" />
+</svg>
