@@ -78,15 +78,18 @@ export function KnowledgeImpactDemo() {
     );
   }, [query]);
 
-  const explorerAnswer = explorerQuestion.toLowerCase().includes('roi')
-    ? insights.find((item) => item.id === 'I-003') ?? insights[0]
-    : explorerQuestion.toLowerCase().includes('stem')
-      ? insights.find((item) => item.id === 'I-002') ?? insights[0]
-      : explorerQuestion.toLowerCase().includes('capacity')
-        ? insights.find((item) => item.id === 'I-004') ?? insights[0]
-        : explorerQuestion.toLowerCase().includes('reconcil') || explorerQuestion.toLowerCase().includes('contradict')
-          ? insights.find((item) => item.id === 'I-005') ?? insights[0]
-          : insights[0];
+  const explorerNeedle = explorerQuestion.toLowerCase();
+  const explorerAnswer = explorerNeedle.includes('roi') && explorerNeedle.includes('sufficient')
+    ? insights.find((item) => item.id === 'I-006') ?? insights[0]
+    : explorerNeedle.includes('roi')
+      ? insights.find((item) => item.id === 'I-003') ?? insights[0]
+      : explorerNeedle.includes('stem')
+        ? insights.find((item) => item.id === 'I-002') ?? insights[0]
+        : explorerNeedle.includes('capacity')
+          ? insights.find((item) => item.id === 'I-004') ?? insights[0]
+          : explorerNeedle.includes('reconcil') || explorerNeedle.includes('contradict')
+            ? insights.find((item) => item.id === 'I-005') ?? insights[0]
+            : insights[0];
 
   const demoClassName = `ki-demo${highContrast ? ' ki-high-contrast' : ''}${reducedMotion ? ' ki-reduced-motion' : ''}`;
 
@@ -366,7 +369,7 @@ export function KnowledgeImpactDemo() {
               value={explorerQuestion}
               onChange={(event) => setExplorerQuestion(event.target.value)}
             />
-            <p className="field-help">Try questions containing “ROI”, “STEM”, “capacity”, “contradict”, or other wording for the recurring challenge example.</p>
+            <p className="field-help">Try questions containing “ROI”, “sufficient ROI”, “STEM”, “capacity”, “contradict”, or other wording for the recurring challenge example.</p>
           </div>
 
           <article className="ki-panel ki-answer" aria-live="polite">
