@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { KnowledgeImpactDemoRelease } from '@/components/knowledge-impact-demo-release';
@@ -6,14 +6,15 @@ import { KnowledgeImpactDemoRelease } from '@/components/knowledge-impact-demo-r
 describe('KnowledgeImpactDemoRelease', () => {
   it('provides the complete accessibility toolbar with reading and text-size controls', () => {
     render(<KnowledgeImpactDemoRelease />);
+    const toolbar = within(screen.getByRole('region', { name: 'Accessibility tools' }));
 
-    expect(screen.getByRole('button', { name: 'Read this page' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Pause reading' })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByRole('button', { name: 'Stop reading' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Decrease text' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Increase text' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'High contrast' })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByRole('button', { name: 'Reduced motion' })).toHaveAttribute('aria-pressed', 'false');
+    expect(toolbar.getByRole('button', { name: 'Read this page' })).toBeInTheDocument();
+    expect(toolbar.getByRole('button', { name: 'Pause reading' })).toHaveAttribute('aria-pressed', 'false');
+    expect(toolbar.getByRole('button', { name: 'Stop reading' })).toBeInTheDocument();
+    expect(toolbar.getByRole('button', { name: 'Decrease text' })).toBeInTheDocument();
+    expect(toolbar.getByRole('button', { name: 'Increase text' })).toBeInTheDocument();
+    expect(toolbar.getByRole('button', { name: 'High contrast' })).toHaveAttribute('aria-pressed', 'false');
+    expect(toolbar.getByRole('button', { name: 'Reduced motion' })).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('changes the text-size preference in bounded steps', () => {
