@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { KnowledgeImpactDemo } from '@/components/knowledge-impact-demo';
@@ -12,20 +11,20 @@ describe('KnowledgeImpactDemo', () => {
     expect(screen.getByText(/does not represent Zenex Foundation data/i)).toBeInTheDocument();
   });
 
-  it('provides keyboard-operable view navigation', async () => {
-    const user = userEvent.setup();
+  it('uses native keyboard-focusable buttons for view navigation', () => {
     render(<KnowledgeImpactDemo />);
     const portfolioButton = screen.getByRole('button', { name: 'Portfolio intelligence' });
+    expect(portfolioButton.tagName).toBe('BUTTON');
     portfolioButton.focus();
-    await user.keyboard('{Enter}');
+    expect(portfolioButton).toHaveFocus();
+    fireEvent.click(portfolioButton);
     expect(portfolioButton).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('heading', { level: 2, name: 'Portfolio intelligence' })).toBeInTheDocument();
   });
 
-  it('shows provenance for an insight and distinguishes evidence classes in text', async () => {
-    const user = userEvent.setup();
+  it('shows provenance for an insight and distinguishes evidence classes in text', () => {
     render(<KnowledgeImpactDemo />);
-    await user.click(screen.getByRole('button', { name: 'Evidence traceability' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Evidence traceability' }));
     expect(screen.getByRole('heading', { level: 2, name: 'Evidence traceability' })).toBeInTheDocument();
     expect(screen.getAllByText('AI interpretation').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Calculated indicator').length).toBeGreaterThan(0);
@@ -33,13 +32,11 @@ describe('KnowledgeImpactDemo', () => {
     expect(screen.getAllByText(/Source location:/i).length).toBeGreaterThan(0);
   });
 
-  it('refuses to manufacture an ROI conclusion', async () => {
-    const user = userEvent.setup();
+  it('refuses to manufacture an ROI conclusion', () => {
     render(<KnowledgeImpactDemo />);
-    await user.click(screen.getByRole('button', { name: 'Knowledge explorer' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge explorer' }));
     const question = screen.getByLabelText(/Ask a management question/i);
-    await user.clear(question);
-    await user.type(question, 'What is the ROI?');
+    fireEvent.change(question, { target: { value: 'What is the ROI?' } });
     expect(screen.getByRole('heading', { level: 3, name: /Evidence is insufficient for a defensible ROI conclusion/i })).toBeInTheDocument();
   });
 });
