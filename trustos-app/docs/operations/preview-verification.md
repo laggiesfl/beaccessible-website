@@ -13,12 +13,13 @@
 - Current application unit/component suite: **108/108 passed** across 22 files.
 - TypeScript verification: passed.
 - Production build: passed.
-- Full staged Playwright matrix: **48/48 passed** with no skips: 24 Chromium and 24 Firefox.
+- Full staged Playwright matrix: **56/56 passed** with no skips: 28 Chromium and 28 Firefox.
 - Deployed axe coverage passed for sign-in, invitation activation, client workspace, team administration, audit and platform administration.
 - Staged 320 CSS pixel reflow, reduced-motion, forced-colour and sign-in focus/error-summary checks passed in Chromium and Firefox.
 - Fictional two-organisation release-denial and tenant-isolation matrix passed in Chromium and Firefox.
 - Module-role checks passed for fictional viewer, contributor, reviewer, approver and module administrator accounts; roleless GrantFlow access remained denied.
 - Licensed client administrator module switching passed; unlicensed GrantFlow, suspended-organisation and removed-membership denials passed.
+- Staged browser-console and browser-visible request inspection passed for the workspace, team administration, audit and GrantFlow in Chromium and Firefox; no console errors or server-secret names were observed.
 - Disposable Supabase reset from tracked migrations: passed.
 - Full Supabase pgTAP database matrix: passed.
 - Warning-level local database lint with `--fail-on warning`: passed.
@@ -42,7 +43,6 @@ The following release gates are **not yet recorded as passed**:
 
 - Manual keyboard-only completion across the full set of critical account journeys beyond the automated focus/keyboard checks already recorded.
 - NVDA verification with Firefox and a Chromium browser on the critical account journeys.
-- Browser-console and sensitive-network-payload review against the final staged deployment.
 - Supabase Auth leaked-password protection enablement and re-check.
 
 The protected E2E fixture credential remains local to the authorised Windows runner and has deliberately not been copied into GitHub.
