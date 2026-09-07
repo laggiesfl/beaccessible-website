@@ -1,0 +1,56 @@
+.ki-demo { display: grid; gap: 2rem; }
+.ki-hero { max-width: 60rem; }
+.ki-lead { max-width: 52rem; font-size: 1.1rem; color: var(--text-mid); }
+.ki-view-nav { display: flex; flex-wrap: wrap; gap: 0.65rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--tint-3); }
+.ki-view-button { min-height: 44px; padding: 0.65rem 0.9rem; border: 2px solid var(--deep-blue); border-radius: 0.4rem; background: var(--white); color: var(--deep-blue); font: inherit; font-weight: 800; cursor: pointer; }
+.ki-view-button[aria-pressed='true'] { background: var(--deep-blue); color: var(--white); }
+.ki-view-status { color: var(--text-mid); font-weight: 700; }
+.ki-section { display: grid; gap: 1.5rem; }
+.ki-section-heading h2 { margin: 0; color: var(--deep-blue); }
+.ki-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.ki-metrics article { display: grid; gap: 0.2rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--white); box-shadow: 0 0.35rem 1rem rgb(31 63 107 / 0.06); }
+.ki-metrics strong { color: var(--deep-blue); font-size: 1.75rem; }
+.ki-metrics span { color: var(--text-mid); }
+.ki-process { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.ki-process article { padding: 1rem; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--tint-3); }
+.ki-process h3 { margin: 0.5rem 0 0; color: var(--deep-blue); font-size: 1rem; }
+.ki-step-number { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 2px solid var(--deep-blue); border-radius: 50%; background: var(--white); color: var(--deep-blue); font-weight: 800; }
+.ki-grid-two, .ki-insight-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.ki-panel { padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--white); box-shadow: 0 0.35rem 1rem rgb(31 63 107 / 0.06); }
+.ki-panel h3, .ki-panel h4 { color: var(--deep-blue); }
+.ki-search-field, .ki-question-field { max-width: 52rem; }
+.ki-report-layout { display: grid; grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.8fr); gap: 1.25rem; align-items: start; }
+.ki-report-list { display: grid; gap: 0.65rem; }
+.ki-report-button { display: grid; gap: 0.35rem; width: 100%; min-height: 44px; padding: 0.9rem; border: 2px solid var(--border); border-radius: 0.5rem; background: var(--white); color: var(--text-dark); text-align: left; font: inherit; cursor: pointer; }
+.ki-report-button[aria-pressed='true'] { border-color: var(--deep-blue); background: var(--tint-3); }
+.ki-report-button span { color: var(--text-mid); }
+.ki-definition-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.ki-definition-grid div { padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.4rem; }
+.ki-definition-grid dt { color: var(--text-mid); font-size: 0.9rem; font-weight: 700; }
+.ki-definition-grid dd { margin: 0.2rem 0 0; font-weight: 700; }
+.ki-badge { display: inline-flex; align-items: center; width: fit-content; min-height: 30px; padding: 0.2rem 0.55rem; border: 2px solid var(--deep-blue); border-radius: 999px; background: var(--white); color: var(--deep-blue); font-size: 0.82rem; font-weight: 800; }
+.ki-evidence-list { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+.ki-evidence-card { border: 1px solid var(--border); border-radius: 0.5rem; background: var(--tint-3); }
+.ki-evidence-card summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; padding: 0.75rem; color: var(--deep-blue); font-weight: 800; cursor: pointer; }
+.ki-evidence-body { padding: 0 0.9rem 0.9rem; }
+.ki-evidence-body p { margin: 0.55rem 0; }
+.ki-caveat { padding: 0.75rem; border-left: 4px solid var(--deep-blue); background: var(--tint-3); }
+.ki-answer { max-width: 58rem; }
+.ki-provenance-chain { display: grid; gap: 0.8rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--white); }
+.ki-provenance-chain > div:not(.ki-chain-arrow) { display: grid; gap: 0.5rem; }
+.ki-chain-label { color: var(--text-mid); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.ki-chain-arrow { color: var(--deep-blue); font-size: 1.5rem; font-weight: 800; }
+
+@media (max-width: 50rem) {
+  .ki-metrics, .ki-process, .ki-grid-two, .ki-insight-grid, .ki-report-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 40rem) {
+  .ki-view-nav { display: grid; grid-template-columns: 1fr; }
+  .ki-view-button, .ki-report-button { width: 100%; }
+  .ki-definition-grid { grid-template-columns: 1fr; }
+}
+
+@media (forced-colors: active) {
+  .ki-badge, .ki-view-button, .ki-report-button, .ki-evidence-card { border: 2px solid CanvasText; }
+}
