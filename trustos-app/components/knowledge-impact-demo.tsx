@@ -26,6 +26,8 @@ const views: Array<{ id: ViewId; label: string }> = [
   { id: 'provenance', label: 'Evidence traceability' },
 ];
 
+const logoAlt = 'BeAccessible logo — circular badge with wheelchair user, pram, shopping trolley, and accessibility ramp icons, text reads BEACCESSIBLE CREATING ACCESS FOR ALL';
+
 function EvidenceBadge({ value }: { value: EvidenceClass }) {
   return <span className="ki-badge">{value}</span>;
 }
@@ -87,7 +89,20 @@ export function KnowledgeImpactDemo() {
   return (
     <div className="ki-demo">
       <section className="ki-hero" aria-labelledby="ki-title">
-        <p className="eyebrow">BeAccessible TrustOS / GrantFlow extension</p>
+        <div className="ki-brand-lockup">
+          <img
+            className="ki-brand-logo"
+            src="/beaccessible-logo.svg"
+            width="96"
+            height="96"
+            alt={logoAlt}
+          />
+          <div>
+            <p className="ki-brand-name">BeAccessible</p>
+            <p className="ki-brand-subtitle">TrustOS / GrantFlow extension</p>
+          </div>
+        </div>
+        <p className="eyebrow">Future-facing demonstration</p>
         <h1 id="ki-title">Knowledge & Impact Intelligence</h1>
         <p className="ki-lead">Turn programme and grantee reporting into structured organisational intelligence.</p>
         <div className="status-message" role="note">
