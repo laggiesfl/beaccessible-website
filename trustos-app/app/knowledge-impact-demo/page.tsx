@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { KnowledgeImpactDemo } from '@/components/knowledge-impact-demo';
+import { KnowledgeImpactDemoRelease } from '@/components/knowledge-impact-demo-release';
 
 export const metadata: Metadata = {
   title: 'Knowledge & Impact Intelligence Demonstration',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function KnowledgeImpactDemoPage() {
   return (
     <div className="page-content">
-      <KnowledgeImpactDemo />
+      <KnowledgeImpactDemoRelease />
     </div>
   );
 }
