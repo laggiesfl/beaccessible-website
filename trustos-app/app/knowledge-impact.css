@@ -73,6 +73,48 @@
   font-weight: 700;
 }
 
+.ki-accessibility-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--ki-deep-blue);
+  border-radius: 0.75rem;
+  background: var(--ki-white);
+  color: var(--ki-deep-blue);
+}
+
+.ki-accessibility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.ki-preference-button {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--ki-mid-blue);
+  border-radius: 0.625rem;
+  background: var(--ki-white);
+  color: var(--ki-deep-blue);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ki-preference-button:hover {
+  background: var(--ki-tint-1);
+  border-color: var(--ki-deep-blue);
+}
+
+.ki-preference-button[aria-pressed='true'] {
+  background: var(--ki-deep-blue);
+  border-color: var(--ki-deep-blue);
+  color: var(--ki-white);
+}
+
 .ki-lead {
   max-width: 52rem;
   font-size: 1.1rem;
@@ -392,6 +434,40 @@
   color: var(--ki-deep-blue);
 }
 
+.ki-high-contrast {
+  --ki-mid-blue: #1F3F6B;
+  --ki-soft-blue: #1F3F6B;
+  --ki-secondary-text: #1F3F6B;
+  --ki-card-border: #1F3F6B;
+}
+
+.ki-high-contrast .ki-hero,
+.ki-high-contrast .ki-view-nav,
+.ki-high-contrast .ki-evidence-card,
+.ki-high-contrast .ki-definition-grid div,
+.ki-high-contrast .ki-caveat,
+.ki-high-contrast .status-message {
+  background: var(--ki-white);
+}
+
+.ki-high-contrast .ki-panel,
+.ki-high-contrast .ki-provenance-chain,
+.ki-high-contrast .ki-metrics article,
+.ki-high-contrast .ki-process article {
+  border-width: 2px;
+  box-shadow: none;
+}
+
+.ki-reduced-motion *,
+.ki-reduced-motion *::before,
+.ki-reduced-motion *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transform: none !important;
+}
+
 @media (max-width: 50rem) {
   .ki-metrics,
   .ki-process,
@@ -410,12 +486,20 @@
 
   .ki-view-button,
   .ki-report-button,
-  .ki-panel .secondary-button {
+  .ki-panel .secondary-button,
+  .ki-preference-button {
     width: 100%;
   }
 
   .ki-definition-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ki-accessibility-toolbar,
+  .ki-accessibility-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
   }
 }
 
@@ -452,14 +536,17 @@
 @media (forced-colors: active) {
   .ki-badge,
   .ki-view-button,
+  .ki-preference-button,
   .ki-report-button,
   .ki-evidence-card,
   .ki-panel,
-  .ki-provenance-chain {
+  .ki-provenance-chain,
+  .ki-accessibility-toolbar {
     border: 2px solid CanvasText;
   }
 
-  .ki-view-button[aria-pressed='true'] {
+  .ki-view-button[aria-pressed='true'],
+  .ki-preference-button[aria-pressed='true'] {
     forced-color-adjust: none;
     background: CanvasText;
     color: Canvas;
