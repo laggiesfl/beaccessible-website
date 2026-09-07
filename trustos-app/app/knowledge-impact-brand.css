@@ -1,0 +1,102 @@
+.ki-demo {
+  color: #1F3F6B;
+}
+
+.ki-hero {
+  background: linear-gradient(135deg, #172F52 0%, #1F3F6B 60%, #4A78B5 100%);
+  color: #FFFFFF;
+  box-shadow: 0 0.5rem 1.5rem rgba(31, 63, 107, 0.18);
+}
+
+.ki-hero h1,
+.ki-hero .eyebrow,
+.ki-hero .ki-lead,
+.ki-hero .ki-brand-name,
+.ki-hero .ki-brand-subtitle {
+  color: #FFFFFF;
+}
+
+.ki-hero .status-message {
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+.ki-brand-logo {
+  width: clamp(4.5rem, 12vw, 6rem);
+  height: clamp(4.5rem, 12vw, 6rem);
+  object-fit: cover;
+  border-radius: 50%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.ki-demo h1,
+.ki-demo h2,
+.ki-demo h3,
+.ki-demo h4,
+.ki-demo p,
+.ki-demo li,
+.ki-demo dd,
+.ki-demo dt,
+.ki-demo label {
+  color: #1F3F6B;
+}
+
+.ki-hero h1,
+.ki-hero p,
+.ki-hero .eyebrow,
+.ki-hero .ki-brand-name,
+.ki-hero .ki-brand-subtitle {
+  color: #FFFFFF;
+}
+
+.ki-view-button[aria-pressed='true'],
+.ki-preference-button[aria-pressed='true'] {
+  background: #2F5C9A;
+  border-color: #2F5C9A;
+  color: #FFFFFF;
+}
+
+.ki-view-button:hover,
+.ki-preference-button:hover,
+.ki-panel .secondary-button:hover {
+  background: #1F3F6B;
+  border-color: #1F3F6B;
+  color: #FFFFFF;
+}
+
+.ki-view-nav,
+.ki-process article,
+.ki-evidence-card,
+.ki-definition-grid div,
+.ki-caveat {
+  background: #F0F5FB;
+}
+
+.ki-panel,
+.ki-metrics article,
+.ki-provenance-chain,
+.ki-accessibility-toolbar {
+  background: #FFFFFF;
+}
+
+.ki-demo :focus-visible {
+  outline: 3px solid #4A78B5;
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .ki-hero {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .ki-hero h1,
+  .ki-hero p,
+  .ki-hero .eyebrow,
+  .ki-hero .ki-brand-name,
+  .ki-hero .ki-brand-subtitle {
+    color: CanvasText;
+  }
+}
