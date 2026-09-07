@@ -39,4 +39,28 @@ describe('KnowledgeImpactDemo', () => {
     fireEvent.change(question, { target: { value: 'What is the ROI?' } });
     expect(screen.getByRole('heading', { level: 3, name: /Evidence is insufficient for a defensible ROI conclusion/i })).toBeInTheDocument();
   });
+
+  it('provides a learning library with evidence-backed organisational learning', () => {
+    render(<KnowledgeImpactDemo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Learning library' }));
+    expect(screen.getByRole('heading', { level: 2, name: 'Learning library' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: /Implementation conditions need explicit attention/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/Supporting evidence/i).length).toBeGreaterThan(0);
+  });
+
+  it('compares reporting periods while preserving the non-causal caveat', () => {
+    render(<KnowledgeImpactDemo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Period comparison' }));
+    expect(screen.getByRole('heading', { level: 2, name: 'Period comparison' })).toBeInTheDocument();
+    expect(screen.getByText(/68% in 2025 to 82% in Jan–Jun 2026/i)).toBeInTheDocument();
+    expect(screen.getByText(/descriptive, not proof/i)).toBeInTheDocument();
+  });
+
+  it('shows management intelligence including evidence that needs reconciliation', () => {
+    render(<KnowledgeImpactDemo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Management intelligence' }));
+    expect(screen.getByRole('heading', { level: 2, name: 'Management intelligence' })).toBeInTheDocument();
+    expect(screen.getByText(/needs reconciliation rather than automatic summarisation/i)).toBeInTheDocument();
+    expect(screen.getByText(/should be reviewed, not silently resolved by AI/i)).toBeInTheDocument();
+  });
 });
