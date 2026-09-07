@@ -61,6 +61,8 @@ export function KnowledgeImpactDemo() {
   const [selectedReportId, setSelectedReportId] = useState(reports[0].id);
   const [query, setQuery] = useState('');
   const [explorerQuestion, setExplorerQuestion] = useState('What recurring implementation challenges appear across projects?');
+  const [highContrast, setHighContrast] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   const selectedReport = reports.find((report) => report.id === selectedReportId) ?? reports[0];
   const selectedEvidence = evidence.filter((item) => item.reportId === selectedReport.id);
@@ -86,8 +88,10 @@ export function KnowledgeImpactDemo() {
           ? insights.find((item) => item.id === 'I-005') ?? insights[0]
           : insights[0];
 
+  const demoClassName = `ki-demo${highContrast ? ' ki-high-contrast' : ''}${reducedMotion ? ' ki-reduced-motion' : ''}`;
+
   return (
-    <div className="ki-demo">
+    <div className={demoClassName}>
       <section className="ki-hero" aria-labelledby="ki-title">
         <div className="ki-brand-lockup">
           <img
@@ -107,6 +111,28 @@ export function KnowledgeImpactDemo() {
         <p className="ki-lead">Turn programme and grantee reporting into structured organisational intelligence.</p>
         <div className="status-message" role="note">
           <strong>Demonstration only:</strong> this prototype uses synthetic data. It does not represent Zenex Foundation data, a procurement decision, or a proposed 2026 implementation.
+        </div>
+      </section>
+
+      <section className="ki-accessibility-toolbar" aria-label="Display accessibility preferences">
+        <strong>Display preferences</strong>
+        <div className="ki-accessibility-actions">
+          <button
+            type="button"
+            className="ki-preference-button"
+            aria-pressed={highContrast}
+            onClick={() => setHighContrast((value) => !value)}
+          >
+            High contrast
+          </button>
+          <button
+            type="button"
+            className="ki-preference-button"
+            aria-pressed={reducedMotion}
+            onClick={() => setReducedMotion((value) => !value)}
+          >
+            Reduced motion
+          </button>
         </div>
       </section>
 
