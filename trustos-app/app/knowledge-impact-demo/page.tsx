@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function KnowledgeImpactDemoPage() {
   return (
-    <main id="main-content" className="page-content">
+    <div className="page-content">
       <KnowledgeImpactDemo />
-    </main>
+    </div>
   );
 }
