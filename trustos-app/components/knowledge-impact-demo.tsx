@@ -2,14 +2,26 @@
 
 import { useMemo, useState } from 'react';
 
-import { evidence, getEvidenceByIds, insights, reports, type EvidenceClass } from '@/lib/knowledge-impact/demo-data';
+import {
+  evidence,
+  getEvidenceByIds,
+  insights,
+  learningNotes,
+  managementQuestions,
+  periodComparisons,
+  reports,
+  type EvidenceClass,
+} from '@/lib/knowledge-impact/demo-data';
 
-type ViewId = 'overview' | 'reports' | 'portfolio' | 'explorer' | 'provenance';
+type ViewId = 'overview' | 'reports' | 'portfolio' | 'learning' | 'comparison' | 'management' | 'explorer' | 'provenance';
 
 const views: Array<{ id: ViewId; label: string }> = [
   { id: 'overview', label: 'Overview' },
   { id: 'reports', label: 'Report intelligence' },
   { id: 'portfolio', label: 'Portfolio intelligence' },
+  { id: 'learning', label: 'Learning library' },
+  { id: 'comparison', label: 'Period comparison' },
+  { id: 'management', label: 'Management intelligence' },
   { id: 'explorer', label: 'Knowledge explorer' },
   { id: 'provenance', label: 'Evidence traceability' },
 ];
@@ -63,12 +75,14 @@ export function KnowledgeImpactDemo() {
   }, [query]);
 
   const explorerAnswer = explorerQuestion.toLowerCase().includes('roi')
-    ? insights[2]
+    ? insights.find((item) => item.id === 'I-003') ?? insights[0]
     : explorerQuestion.toLowerCase().includes('stem')
-      ? insights[1]
+      ? insights.find((item) => item.id === 'I-002') ?? insights[0]
       : explorerQuestion.toLowerCase().includes('capacity')
-        ? insights[3]
-        : insights[0];
+        ? insights.find((item) => item.id === 'I-004') ?? insights[0]
+        : explorerQuestion.toLowerCase().includes('reconcil') || explorerQuestion.toLowerCase().includes('contradict')
+          ? insights.find((item) => item.id === 'I-005') ?? insights[0]
+          : insights[0];
 
   return (
     <div className="ki-demo">
@@ -112,7 +126,7 @@ export function KnowledgeImpactDemo() {
             <article><strong>{reports.length}</strong><span>synthetic reports</span></article>
             <article><strong>{new Set(reports.map((report) => report.project)).size}</strong><span>projects represented</span></article>
             <article><strong>{evidence.length}</strong><span>traceable evidence objects</span></article>
-            <article><strong>{insights.length}</strong><span>cross-report insights</span></article>
+            <article><strong>{learningNotes.length}</strong><span>organisational learning notes</span></article>
           </div>
 
           <div className="ki-process" aria-label="Evidence intelligence process">
@@ -131,9 +145,19 @@ export function KnowledgeImpactDemo() {
               <button type="button" className="secondary-button" onClick={() => setActiveView('provenance')}>View evidence traceability</button>
             </article>
             <article className="ki-panel">
+              <h3>Learning can accumulate over time</h3>
+              <p>Reviewed evidence can be turned into reusable organisational learning without losing the link back to its source.</p>
+              <button type="button" className="secondary-button" onClick={() => setActiveView('learning')}>View learning library</button>
+            </article>
+            <article className="ki-panel">
+              <h3>Change over time stays qualified</h3>
+              <p>Period comparisons can calculate differences while keeping the limits of non-equivalent periods and causal interpretation visible.</p>
+              <button type="button" className="secondary-button" onClick={() => setActiveView('comparison')}>Compare periods</button>
+            </article>
+            <article className="ki-panel">
               <h3>Uncertainty remains visible</h3>
-              <p>The demo distinguishes reported facts, calculated indicators and AI interpretation, and it can explicitly state when evidence is insufficient.</p>
-              <button type="button" className="secondary-button" onClick={() => setActiveView('portfolio')}>View portfolio intelligence</button>
+              <p>The demo distinguishes reported facts, calculated indicators and AI interpretation, and flags evidence gaps or tensions for management review.</p>
+              <button type="button" className="secondary-button" onClick={() => setActiveView('management')}>View management intelligence</button>
             </article>
           </div>
         </section>
@@ -217,6 +241,74 @@ export function KnowledgeImpactDemo() {
         </section>
       ) : null}
 
+      {activeView === 'learning' ? (
+        <section className="ki-section" aria-labelledby="learning-heading">
+          <div className="ki-section-heading">
+            <div>
+              <p className="eyebrow">Institutional learning</p>
+              <h2 id="learning-heading">Learning library</h2>
+            </div>
+          </div>
+          <p className="ki-lead">Evidence-backed learning notes can be reused across programme design, management review and reporting without becoming detached from their sources.</p>
+          <div className="ki-insight-grid">
+            {learningNotes.map((note) => (
+              <article className="ki-panel" key={note.id}>
+                <p className="eyebrow">{note.theme} · {note.status}</p>
+                <h3>{note.title}</h3>
+                <p>{note.learning}</p>
+                <p><strong>Recommended use:</strong> {note.recommendedUse}</p>
+                <h4>Supporting evidence</h4>
+                <EvidenceList ids={note.evidenceIds} />
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {activeView === 'comparison' ? (
+        <section className="ki-section" aria-labelledby="comparison-heading">
+          <div className="ki-section-heading">
+            <div>
+              <p className="eyebrow">Change over time</p>
+              <h2 id="comparison-heading">Period comparison</h2>
+            </div>
+          </div>
+          {periodComparisons.map((comparison) => (
+            <article className="ki-panel ki-answer" key={comparison.id}>
+              <p className="eyebrow">{comparison.project} · {comparison.periods.join(' → ')}</p>
+              <h3>{comparison.headline}</h3>
+              <p>{comparison.comparison}</p>
+              <p className="ki-caveat"><strong>Interpretation limit:</strong> {comparison.caveat}</p>
+              <h4>Supporting evidence</h4>
+              <EvidenceList ids={comparison.evidenceIds} />
+            </article>
+          ))}
+        </section>
+      ) : null}
+
+      {activeView === 'management' ? (
+        <section className="ki-section" aria-labelledby="management-heading">
+          <div className="ki-section-heading">
+            <div>
+              <p className="eyebrow">Questions management can actually use</p>
+              <h2 id="management-heading">Management intelligence</h2>
+            </div>
+          </div>
+          <div className="ki-insight-grid">
+            {managementQuestions.map((item) => (
+              <article className="ki-panel" key={item.id}>
+                <EvidenceBadge value={item.evidenceClass} />
+                <h3>{item.question}</h3>
+                <p>{item.answer}</p>
+                <p><strong>Decision use:</strong> {item.decisionUse}</p>
+                <h4>Supporting evidence</h4>
+                <EvidenceList ids={item.evidenceIds} />
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {activeView === 'explorer' ? (
         <section className="ki-section" aria-labelledby="explorer-heading">
           <div className="ki-section-heading">
@@ -233,7 +325,7 @@ export function KnowledgeImpactDemo() {
               value={explorerQuestion}
               onChange={(event) => setExplorerQuestion(event.target.value)}
             />
-            <p className="field-help">Try questions containing “ROI”, “STEM”, “capacity”, or any other wording for the recurring challenge example.</p>
+            <p className="field-help">Try questions containing “ROI”, “STEM”, “capacity”, “contradict”, or other wording for the recurring challenge example.</p>
           </div>
 
           <article className="ki-panel ki-answer" aria-live="polite">
