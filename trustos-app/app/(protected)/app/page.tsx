@@ -65,6 +65,18 @@ export default async function WorkspacePage() {
 
       <ModuleShell modules={availableModules} initialModule={availableModules[0]?.id} />
 
+      <section className="workspace-admin" aria-labelledby="knowledge-impact-heading">
+        <p className="eyebrow">Future-facing demonstration</p>
+        <h2 id="knowledge-impact-heading">Knowledge &amp; Impact Intelligence</h2>
+        <p>
+          Explore a synthetic-data demonstration showing how programme and grantee reports can
+          become searchable, traceable organisational intelligence without replacing existing systems.
+        </p>
+        <Link className="primary-button action-link" href="/knowledge-impact-demo">
+          Open Knowledge &amp; Impact Intelligence demo
+        </Link>
+      </section>
+
       {clientAdminMembership ? (
         <section className="workspace-admin" aria-labelledby="team-admin-heading">
           <h2 id="team-admin-heading">Team administration</h2>
