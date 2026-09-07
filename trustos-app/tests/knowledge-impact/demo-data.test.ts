@@ -41,6 +41,16 @@ describe('knowledge impact demo data', () => {
     expect(insights.some((insight) => insight.title.toLowerCase().includes('insufficient') && insight.title.toLowerCase().includes('roi'))).toBe(true);
   });
 
+  it('includes a synthetic sufficient-evidence ROI conclusion with traceable inputs', () => {
+    const roiInsight = insights.find((insight) => insight.title === 'Evidence is sufficient for a defensible ROI conclusion');
+    expect(roiInsight).toBeDefined();
+    expect(roiInsight?.evidenceClass).toBe('Calculated indicator');
+    expect(roiInsight?.evidenceIds.length).toBeGreaterThanOrEqual(3);
+    expect(getEvidenceByIds(roiInsight?.evidenceIds ?? [])).toHaveLength(roiInsight?.evidenceIds.length ?? 0);
+    expect(roiInsight?.summary).toMatch(/investment/i);
+    expect(roiInsight?.summary).toMatch(/benefit/i);
+  });
+
   it('includes reusable learning notes with evidence provenance', () => {
     expect(learningNotes.length).toBeGreaterThanOrEqual(3);
     for (const note of learningNotes) {
