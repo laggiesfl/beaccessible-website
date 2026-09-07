@@ -65,6 +65,15 @@ describe('KnowledgeImpactDemo', () => {
     expect(screen.getByRole('heading', { level: 3, name: /Evidence is insufficient for a defensible ROI conclusion/i })).toBeInTheDocument();
   });
 
+  it('shows a defensible ROI example when sufficient evidence is requested', () => {
+    render(<KnowledgeImpactDemo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge explorer' }));
+    const question = screen.getByLabelText(/Ask a management question/i);
+    fireEvent.change(question, { target: { value: 'Show me a sufficient evidence ROI example' } });
+    expect(screen.getByRole('heading', { level: 3, name: 'Evidence is sufficient for a defensible ROI conclusion' })).toBeInTheDocument();
+    expect(screen.getByText(/calculated ROI of 30%/i)).toBeInTheDocument();
+  });
+
   it('provides a learning library with evidence-backed organisational learning', () => {
     render(<KnowledgeImpactDemo />);
     fireEvent.click(screen.getByRole('button', { name: 'Learning library' }));
