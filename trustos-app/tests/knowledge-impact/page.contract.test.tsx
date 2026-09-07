@@ -11,6 +11,19 @@ describe('KnowledgeImpactDemo', () => {
     expect(screen.getByText(/does not represent Zenex Foundation data/i)).toBeInTheDocument();
   });
 
+  it('embeds the BeAccessible brand logo with meaningful alt text', () => {
+    render(<KnowledgeImpactDemo />);
+    expect(screen.getByRole('img', {
+      name: 'BeAccessible logo — circular badge with wheelchair user, pram, shopping trolley, and accessibility ramp icons, text reads BEACCESSIBLE CREATING ACCESS FOR ALL',
+    })).toHaveAttribute('src', '/beaccessible-logo.svg');
+  });
+
+  it('keeps the primary demonstration navigation to eight accessible views', () => {
+    render(<KnowledgeImpactDemo />);
+    const navigation = screen.getByRole('navigation', { name: 'Knowledge and impact demonstration views' });
+    expect(navigation.querySelectorAll('button')).toHaveLength(8);
+  });
+
   it('uses native keyboard-focusable buttons for view navigation', () => {
     render(<KnowledgeImpactDemo />);
     const portfolioButton = screen.getByRole('button', { name: 'Portfolio intelligence' });
