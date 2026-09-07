@@ -36,6 +36,35 @@ export type DemoInsight = {
   caveat?: string;
 };
 
+export type LearningNote = {
+  id: string;
+  title: string;
+  theme: string;
+  learning: string;
+  recommendedUse: string;
+  evidenceIds: string[];
+  status: 'Ready for discussion' | 'Needs validation';
+};
+
+export type PeriodComparison = {
+  id: string;
+  project: string;
+  periods: string[];
+  headline: string;
+  comparison: string;
+  evidenceIds: string[];
+  caveat: string;
+};
+
+export type ManagementQuestion = {
+  id: string;
+  question: string;
+  answer: string;
+  evidenceClass: EvidenceClass;
+  evidenceIds: string[];
+  decisionUse: string;
+};
+
 export const reports: DemoReport[] = [
   {
     id: 'R-001',
@@ -236,6 +265,58 @@ export const evidence: EvidenceObject[] = [
     sourceExcerpt: 'AI-assisted synthesis of E-002, E-008 and E-009. Human review is required before use as organisational learning.',
     sourceLocation: 'Derived synthesis across three source records',
   },
+  {
+    id: 'E-011',
+    reportId: 'R-002',
+    project: 'Teacher Development Project',
+    programme: 'Educator Development',
+    reportingPeriod: '2025',
+    category: 'Outcome',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Confirmed',
+    statement: '68% of participating educators completed at least three coaching sessions during 2025.',
+    sourceExcerpt: 'Sixty-eight percent of participating educators completed three or more coaching sessions during the year.',
+    sourceLocation: 'Page 9, Coaching participation',
+  },
+  {
+    id: 'E-012',
+    reportId: 'R-001',
+    project: 'Teacher Development Project',
+    programme: 'Educator Development',
+    reportingPeriod: 'Jan–Jun 2026',
+    category: 'Calculated indicator',
+    evidenceClass: 'Calculated indicator',
+    reviewStatus: 'Confirmed',
+    statement: 'The reported coaching-session completion rate is 14 percentage points higher than the 2025 annual figure.',
+    sourceExcerpt: 'Calculated from the reported values of 68% in 2025 and 82% in Jan–Jun 2026.',
+    sourceLocation: 'Calculation based on R-002 Page 9 and R-001 Page 8',
+  },
+  {
+    id: 'E-013',
+    reportId: 'R-005',
+    project: 'Rural Schools Support',
+    programme: 'Learner Achievement',
+    reportingPeriod: 'Jan–Jun 2026',
+    category: 'Contradictory evidence',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Needs clarification',
+    statement: 'Overall programme participation was reported as stable despite transport constraints at some rural sites.',
+    sourceExcerpt: 'Overall participation remained broadly stable, although individual rural sites continued to report transport-related disruption.',
+    sourceLocation: 'Page 5, Participation overview',
+  },
+  {
+    id: 'E-014',
+    reportId: 'R-003',
+    project: 'STEM Learning Initiative',
+    programme: 'Learner Achievement',
+    reportingPeriod: 'Q2 2026',
+    category: 'Challenge',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Confirmed',
+    statement: 'Timetable pressure limited the frequency of practical STEM activities in some schools.',
+    sourceExcerpt: 'Timetable pressure remained the most frequently cited constraint on increasing practical STEM activity.',
+    sourceLocation: 'Page 9, Delivery constraints',
+  },
 ];
 
 export const insights: DemoInsight[] = [
@@ -269,6 +350,91 @@ export const insights: DemoInsight[] = [
     evidenceIds: ['E-009'],
     evidenceClass: 'AI interpretation',
     caveat: 'Single-source observation; further evidence is required before generalising.',
+  },
+  {
+    id: 'I-005',
+    title: 'Participation and implementation barriers can coexist',
+    summary: 'Rural Schools Support reports stable overall participation while also reporting transport disruption at specific sites.',
+    evidenceIds: ['E-008', 'E-013'],
+    evidenceClass: 'AI interpretation',
+    caveat: 'These statements are not automatically reconciled; management review is required to understand site-level variation.',
+  },
+];
+
+export const learningNotes: LearningNote[] = [
+  {
+    id: 'L-001',
+    title: 'Implementation conditions need explicit attention',
+    theme: 'Delivery conditions',
+    learning: 'Transport, timetable pressure and uneven site capacity recur across otherwise different education interventions.',
+    recommendedUse: 'Use during programme design and implementation reviews to test whether delivery conditions are being monitored alongside intervention activities.',
+    evidenceIds: ['E-002', 'E-008', 'E-009', 'E-014'],
+    status: 'Ready for discussion',
+  },
+  {
+    id: 'L-002',
+    title: 'Participation metrics need local context',
+    theme: 'Measurement interpretation',
+    learning: 'Stable aggregate participation can coexist with disruption at individual sites, so portfolio averages should not erase local implementation barriers.',
+    recommendedUse: 'Use in management review to identify where aggregate reporting should be supplemented by site-level evidence.',
+    evidenceIds: ['E-008', 'E-013'],
+    status: 'Needs validation',
+  },
+  {
+    id: 'L-003',
+    title: 'Outcome claims must remain proportionate to the evidence',
+    theme: 'Evidence quality',
+    learning: 'Leadership-practice improvement is reported, but the evidence does not support attribution of learner-outcome changes to that intervention.',
+    recommendedUse: 'Use when preparing external reporting or internal impact narratives to separate supported outcomes from unsupported causal claims.',
+    evidenceIds: ['E-005', 'E-006'],
+    status: 'Ready for discussion',
+  },
+];
+
+export const periodComparisons: PeriodComparison[] = [
+  {
+    id: 'C-001',
+    project: 'Teacher Development Project',
+    periods: ['2025', 'Jan–Jun 2026'],
+    headline: 'Coaching-session completion is higher in the latest reported period',
+    comparison: 'The reported proportion completing at least three coaching sessions rose from 68% in 2025 to 82% in Jan–Jun 2026, a 14 percentage-point difference.',
+    evidenceIds: ['E-001', 'E-011', 'E-012'],
+    caveat: 'This comparison is descriptive, not proof that the programme caused the difference; the reporting periods and cohort conditions are not necessarily equivalent.',
+  },
+];
+
+export const managementQuestions: ManagementQuestion[] = [
+  {
+    id: 'M-001',
+    question: 'What recurring implementation barriers should management watch across the portfolio?',
+    answer: 'Transport constraints, timetable pressure and uneven school-level implementation capacity recur across several synthetic reports.',
+    evidenceClass: 'AI interpretation',
+    evidenceIds: ['E-002', 'E-008', 'E-009', 'E-014'],
+    decisionUse: 'Portfolio risk and implementation review',
+  },
+  {
+    id: 'M-002',
+    question: 'Where is evidence too weak for a confident outcome or ROI claim?',
+    answer: 'The leadership outcome review does not support attribution to learner outcomes, and Rural Schools Support has an incomplete baseline indicator. A defensible ROI conclusion is therefore not supported.',
+    evidenceClass: 'AI interpretation',
+    evidenceIds: ['E-006', 'E-007'],
+    decisionUse: 'Impact communication and evidence planning',
+  },
+  {
+    id: 'M-003',
+    question: 'What changed across reporting periods in teacher development?',
+    answer: 'Reported completion of at least three coaching sessions increased from 68% in 2025 to 82% in Jan–Jun 2026, a descriptive difference of 14 percentage points.',
+    evidenceClass: 'Calculated indicator',
+    evidenceIds: ['E-001', 'E-011', 'E-012'],
+    decisionUse: 'Programme performance review',
+  },
+  {
+    id: 'M-004',
+    question: 'Which evidence needs reconciliation rather than automatic summarisation?',
+    answer: 'Rural Schools Support reports both stable overall participation and transport-related disruption at specific sites. The apparent tension should be reviewed, not silently resolved by AI.',
+    evidenceClass: 'AI interpretation',
+    evidenceIds: ['E-008', 'E-013'],
+    decisionUse: 'Evidence quality and management follow-up',
   },
 ];
 
