@@ -1,5 +1,6 @@
 import './globals.css';
 import './knowledge-impact.css';
+import './knowledge-impact-release.css';
 
 import type { Metadata } from 'next';
 
