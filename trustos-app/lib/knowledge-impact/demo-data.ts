@@ -132,6 +132,17 @@ export const reports: DemoReport[] = [
     reviewStatus: 'Reviewed',
     summary: 'Synthesises repeated implementation themes across the demonstration dataset without making causal claims.',
   },
+  {
+    id: 'R-007',
+    title: 'Digital Learning Support Pilot — ROI Evidence Pack',
+    organisation: 'Synthetic Education Innovation Fund',
+    project: 'Digital Learning Support Pilot',
+    programme: 'Digital Learning',
+    reportingPeriod: '2025–2026',
+    type: 'Verified investment + benefit evidence pack',
+    reviewStatus: 'Reviewed',
+    summary: 'Provides complete synthetic investment data, verified monetised benefits, a defined evaluation boundary and a documented ROI calculation method.',
+  },
 ];
 
 export const evidence: EvidenceObject[] = [
@@ -317,6 +328,58 @@ export const evidence: EvidenceObject[] = [
     sourceExcerpt: 'Timetable pressure remained the most frequently cited constraint on increasing practical STEM activity.',
     sourceLocation: 'Page 9, Delivery constraints',
   },
+  {
+    id: 'E-015',
+    reportId: 'R-007',
+    project: 'Digital Learning Support Pilot',
+    programme: 'Digital Learning',
+    reportingPeriod: '2025–2026',
+    category: 'Verified investment',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Confirmed',
+    statement: 'Total verified programme investment within the defined evaluation boundary was R1,200,000.',
+    sourceExcerpt: 'Verified eligible programme expenditure for the evaluation period totals R1,200,000.',
+    sourceLocation: 'Page 4, Verified investment schedule',
+  },
+  {
+    id: 'E-016',
+    reportId: 'R-007',
+    project: 'Digital Learning Support Pilot',
+    programme: 'Digital Learning',
+    reportingPeriod: '2025–2026',
+    category: 'Verified monetised benefit',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Confirmed',
+    statement: 'Verified monetised benefits within the same evaluation boundary total R1,560,000.',
+    sourceExcerpt: 'Validated monetised benefits attributable within the agreed evaluation boundary total R1,560,000.',
+    sourceLocation: 'Page 7, Verified benefit schedule',
+  },
+  {
+    id: 'E-017',
+    reportId: 'R-007',
+    project: 'Digital Learning Support Pilot',
+    programme: 'Digital Learning',
+    reportingPeriod: '2025–2026',
+    category: 'Methodology',
+    evidenceClass: 'Source evidence',
+    reviewStatus: 'Confirmed',
+    statement: 'The evidence pack uses the same defined evaluation period and boundary for investment and benefit values and documents the ROI formula and exclusions.',
+    sourceExcerpt: 'ROI is calculated as (verified monetised benefits minus verified investment) divided by verified investment; excluded benefits are listed separately.',
+    sourceLocation: 'Page 9, ROI methodology and exclusions',
+  },
+  {
+    id: 'E-018',
+    reportId: 'R-007',
+    project: 'Digital Learning Support Pilot',
+    programme: 'Digital Learning',
+    reportingPeriod: '2025–2026',
+    category: 'ROI calculation',
+    evidenceClass: 'Calculated indicator',
+    reviewStatus: 'Confirmed',
+    statement: 'Using verified investment of R1,200,000 and verified monetised benefits of R1,560,000, the synthetic ROI is 30%.',
+    sourceExcerpt: 'Calculated as (R1,560,000 − R1,200,000) ÷ R1,200,000 = 0.30, or 30%.',
+    sourceLocation: 'Calculation based on Pages 4, 7 and 9',
+  },
 ];
 
 export const insights: DemoInsight[] = [
@@ -358,6 +421,14 @@ export const insights: DemoInsight[] = [
     evidenceIds: ['E-008', 'E-013'],
     evidenceClass: 'AI interpretation',
     caveat: 'These statements are not automatically reconciled; management review is required to understand site-level variation.',
+  },
+  {
+    id: 'I-006',
+    title: 'Evidence is sufficient for a defensible ROI conclusion',
+    summary: 'The synthetic Digital Learning Support Pilot contains verified investment of R1,200,000, verified monetised benefits of R1,560,000, a common evaluation boundary and a documented method, supporting a calculated ROI of 30%.',
+    evidenceIds: ['E-015', 'E-016', 'E-017', 'E-018'],
+    evidenceClass: 'Calculated indicator',
+    caveat: 'This is a synthetic worked example showing an evidence threshold, not a universal ROI standard or a claim about Zenex Foundation programmes.',
   },
 ];
 
@@ -435,6 +506,14 @@ export const managementQuestions: ManagementQuestion[] = [
     evidenceClass: 'AI interpretation',
     evidenceIds: ['E-008', 'E-013'],
     decisionUse: 'Evidence quality and management follow-up',
+  },
+  {
+    id: 'M-005',
+    question: 'When is the evidence sufficient for a defensible ROI conclusion?',
+    answer: 'In the synthetic Digital Learning Support Pilot, verified investment and monetised benefits use the same evaluation boundary, the calculation method and exclusions are documented, and the resulting ROI is traceable to source records. That evidence supports a defensible 30% ROI calculation within the stated synthetic methodology.',
+    evidenceClass: 'Calculated indicator',
+    evidenceIds: ['E-015', 'E-016', 'E-017', 'E-018'],
+    decisionUse: 'ROI evidence-readiness and management assurance',
   },
 ];
 
