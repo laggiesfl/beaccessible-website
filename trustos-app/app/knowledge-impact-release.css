@@ -1,0 +1,110 @@
+.ki-release-shell {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.ki-release-toolbar {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid #1F3F6B;
+  border-radius: 0.75rem;
+  background: #FFFFFF;
+  color: #1F3F6B;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.ki-release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.ki-release-toolbar .ki-preference-button {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #2F5C9A;
+  border-radius: 0.625rem;
+  background: #FFFFFF;
+  color: #1F3F6B;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ki-release-toolbar .ki-preference-button:hover:not(:disabled),
+.ki-release-toolbar .ki-preference-button[aria-pressed='true'] {
+  border-color: #1F3F6B;
+  background: #1F3F6B;
+  color: #FFFFFF;
+}
+
+.ki-release-toolbar .ki-preference-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ki-release-status {
+  margin: 0;
+  color: #1F3F6B;
+  font-weight: 700;
+}
+
+.ki-release-shell .ki-demo > .ki-accessibility-toolbar {
+  display: none;
+}
+
+.ki-release-shell .ki-brand-logo {
+  content: url('/beaccessible-logo-clean.svg');
+}
+
+.ki-release-shell.ki-high-contrast .ki-release-toolbar {
+  border-width: 3px;
+  background: #FFFFFF;
+  color: #1F3F6B;
+}
+
+.ki-release-shell.ki-high-contrast .ki-release-toolbar .ki-preference-button {
+  border-color: #1F3F6B;
+  background: #FFFFFF;
+  color: #1F3F6B;
+}
+
+.ki-release-shell.ki-high-contrast .ki-release-toolbar .ki-preference-button[aria-pressed='true'] {
+  background: #1F3F6B;
+  color: #FFFFFF;
+}
+
+.ki-release-shell.ki-reduced-motion *,
+.ki-release-shell.ki-reduced-motion *::before,
+.ki-release-shell.ki-reduced-motion *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transform: none !important;
+}
+
+@media (max-width: 40rem) {
+  .ki-release-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ki-release-toolbar .ki-preference-button {
+    width: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  .ki-release-toolbar,
+  .ki-release-toolbar .ki-preference-button {
+    border: 2px solid CanvasText;
+  }
+
+  .ki-release-toolbar .ki-preference-button[aria-pressed='true'] {
+    forced-color-adjust: none;
+    background: CanvasText;
+    color: Canvas;
+  }
+}
